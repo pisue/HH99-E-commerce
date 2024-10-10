@@ -120,11 +120,11 @@
 ---
 
 ## 시퀀스 다이어그램
-- [잔액 충전 및 조회 API](diagram/balance-charge.md)
+- [잔액 충전 및 조회 API](docs/diagram/balance-charge.md)
 
-- [상품 조회 API](diagram/products.md)
+- [상품 조회 API](docs/diagram/products.md)
 
-- [주문/결제 API](diagram/order-payment.md)
+- [주문/결제 API](docs/diagram/order-payment.md)
 
-- [인기 판매 상품 조회 API](diagram/order-payment.md)
+- [인기 판매 상품 조회 API](docs/diagram/order-payment.md)
 
