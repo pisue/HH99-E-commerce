@@ -19,8 +19,9 @@ public class ProductController {
 
     @PostMapping
     @Operation(summary = "상품 등록")
-    public HttpStatus addProduct(@RequestBody ProductRequest productRequest) {
-        return HttpStatus.OK;
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
+        ProductResponse productResponse = new ProductResponse(1L, "상품 A", "A 상품입니다.", new BigDecimal(10000), 10, LocalDateTime.now());
+        return ResponseEntity.ok(productResponse);
     }
 
     @GetMapping
