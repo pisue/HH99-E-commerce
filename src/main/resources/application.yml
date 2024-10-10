@@ -1,3 +1,29 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: e-commerce
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html # Swagger UI 접속 경로 (http://localhost:4000/swagger-ui/index.html)
+    operations-sorter: alpha # UI에서 API 메서드 알파벳 순 정렬
+    tags-sorter: alpha # UI에서 태그 알파벳 순 정렬
+    disable-swagger-default-url: true # Swagger 기본 URL 비활성화
+    display-query-params-without-oauth2: true # OAuth2 없이 쿼리 파라미터를 표시
+    doc-expansion: none # 기본적으로 Swagger UI에서 API 상세 정보 접지 않음
+  api-docs:
+    path: /api-docs # OpenAPI JSON 문서 확인 주소 (http://localhost:4000/api-docs)
+  default-consumes-media-type: application/json # 기본 요청 콘텐츠 타입 설정 (application/json)
+  default-produces-media-type: application/json # 기본 응답 콘텐츠 타입 설정 (application/json)

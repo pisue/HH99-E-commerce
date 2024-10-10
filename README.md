@@ -120,11 +120,44 @@
 ---
 
 ## 시퀀스 다이어그램
-- [잔액 충전 및 조회 API](diagram/balance-charge.md)
+- [잔액 충전 및 조회 API](docs/diagram/balance-charge.md)
 
-- [상품 조회 API](diagram/products.md)
+- [상품 조회 API](docs/diagram/products.md)
 
-- [주문/결제 API](diagram/order-payment.md)
+- [주문/결제 API](docs/diagram/order-payment.md)
 
-- [인기 판매 상품 조회 API](diagram/order-payment.md)
+- [인기 판매 상품 조회 API](docs/diagram/order-payment.md)
 
+
+---
+
+## ERD & API 명세
+
+- [API 명세](docs/API.md)  
+- [ERD](docs/erd.md)
+
+
+---
+
+## 기술 스택
+
+### 현재 사용 중인 기술
+
+- **Spring Boot**
+- **Spring Data JPA**
+- **Swagger**
+
+### 추후 적용 예정 기술
+
+- **JUnit**
+- **Kafka**
+- **Spring Security**
+- **OAuth2**
+
+### 데이터 베이스
+- **MySQL**
+
+## 환경 설정
+
+- Java 17 이상
+- Spring Boot 3.3.4
