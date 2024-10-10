@@ -128,3 +128,36 @@
 
 - [인기 판매 상품 조회 API](docs/diagram/order-payment.md)
 
+
+---
+
+## ERD & API 명세
+
+- [API 명세](docs/API.md)  
+- [ERD](docs/erd.md)
+
+
+---
+
+## 기술 스택
+
+### 현재 사용 중인 기술
+
+- **Spring Boot**
+- **Spring Data JPA**
+- **Swagger**
+
+### 추후 적용 예정 기술
+
+- **JUnit**
+- **Kafka**
+- **Spring Security**
+- **OAuth2**
+
+### 데이터 베이스
+- **MySQL**
+
+## 환경 설정
+
+- Java 17 이상
+- Spring Boot 3.3.4
