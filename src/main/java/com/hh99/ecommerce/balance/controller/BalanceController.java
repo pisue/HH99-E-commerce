@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Tag(name = "잔액 관리 API")
 public class BalanceController {
 
-    @PutMapping("/charge")
+    @PatchMapping("/charge")
     @Operation(summary = "잔액충전")
     public ResponseEntity<ChargeBalanceResponse> charge(@RequestBody ChargeBalanceRequest chargeBalanceRequest) {
         int newBalance = 2000;
