@@ -1,4 +1,4 @@
-package com.hh99.ecommerce.balance.controller;
+package com.hh99.ecommerce.balance.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
