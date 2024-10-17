@@ -1,20 +1,20 @@
-package com.hh99.ecommerce.balance.api.exception;
+package com.hh99.ecommerce.order.api.exception;
 
 import com.hh99.ecommerce.balance.application.exception.InvalidAmountException;
-import com.hh99.ecommerce.balance.application.exception.UserBalanceNotFoundException;
 import com.hh99.ecommerce.common.response.ErrorResponse;
+import com.hh99.ecommerce.order.application.exception.OutOfStockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class BalanceExceptionHandler {
+public class OrderExceptionHandler {
 
-    @ExceptionHandler(UserBalanceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerUserNotFoundException(UserBalanceNotFoundException exception) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND, exception.getErrorCode(), exception.getMessage());
+    @ExceptionHandler(OutOfStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlerOutOfStockException(OutOfStockException exception) {
+        return new ErrorResponse(exception.getStatus(), exception.getErrorCode(), exception.getMessage());
     }
 
     @ExceptionHandler(InvalidAmountException.class)

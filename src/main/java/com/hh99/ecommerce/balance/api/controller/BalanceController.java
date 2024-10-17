@@ -1,12 +1,10 @@
 package com.hh99.ecommerce.balance.api.controller;
 
 import com.hh99.ecommerce.balance.api.response.BalanceResponse;
-import com.hh99.ecommerce.balance.api.response.ChargeBalanceResponse;
 import com.hh99.ecommerce.balance.api.request.ChargeBalanceRequest;
 import com.hh99.ecommerce.balance.application.service.BalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,8 +27,15 @@ public class BalanceController implements SwaggerBalanceController{
     @Override
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<BalanceResponse> getBalance(@PathVariable Long userId) {
-        return ResponseEntity.ok(new BalanceResponse(1L, 1L, new BigDecimal("10000")));
+    public BalanceResponse getBalance(@PathVariable Long userId) {
+        return balanceService.getBalance(userId);
     }
+
+    @Override
+    @PatchMapping("/{userId}")
+    public void deductBalance(@PathVariable Long userId,@RequestBody BigDecimal amount) {
+        balanceService.deductBalance(userId, amount);
+    }
+
 
 }

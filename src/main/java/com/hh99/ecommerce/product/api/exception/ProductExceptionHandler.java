@@ -1,6 +1,5 @@
 package com.hh99.ecommerce.product.api.exception;
 
-import com.hh99.ecommerce.balance.application.exception.UserNotFoundException;
 import com.hh99.ecommerce.common.response.ErrorResponse;
 import com.hh99.ecommerce.product.application.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;

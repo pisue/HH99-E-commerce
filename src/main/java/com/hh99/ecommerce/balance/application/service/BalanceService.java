@@ -1,7 +1,8 @@
 package com.hh99.ecommerce.balance.application.service;
 
+import com.hh99.ecommerce.balance.api.response.BalanceResponse;
 import com.hh99.ecommerce.balance.application.exception.InvalidAmountException;
-import com.hh99.ecommerce.balance.application.exception.UserNotFoundException;
+import com.hh99.ecommerce.balance.application.exception.UserBalanceNotFoundException;
 import com.hh99.ecommerce.balance.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,28 @@ public class BalanceService {
             throw new InvalidAmountException();
         }
 
-        Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
+        Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserBalanceNotFoundException::new);
         
-        // 잔액 업데이트
         balance.charge(amount);
         balanceRepository.save(balance);
         
-        // 히스토리 저장
         BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.CHARGE, amount);
         balanceHistoryRepository.save(history);
+    }
+
+    public BalanceResponse getBalance(Long userId) {
+       return balanceRepository.findById(userId)
+               .map(balance -> BalanceResponse.builder()
+                       .amount(balance.getAmount())
+                       .userId(balance.getUserId())
+                       .id(balance.getId())
+                       .build())
+               .orElseThrow(UserBalanceNotFoundException::new);
+    }
+
+    @Transactional
+    public void deductBalance(Long userId, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
+        Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserBalanceNotFoundException::new);
     }
 }

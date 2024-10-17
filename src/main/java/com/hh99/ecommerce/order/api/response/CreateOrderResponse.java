@@ -1,4 +1,4 @@
-package com.hh99.ecommerce.order.controller.response;
+package com.hh99.ecommerce.order.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
