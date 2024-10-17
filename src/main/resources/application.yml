@@ -14,6 +14,10 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=10m
 
 springdoc:
   swagger-ui:
@@ -27,3 +31,5 @@ springdoc:
     path: /api-docs # OpenAPI JSON 문서 확인 주소 (http://localhost:4000/api-docs)
   default-consumes-media-type: application/json # 기본 요청 콘텐츠 타입 설정 (application/json)
   default-produces-media-type: application/json # 기본 응답 콘텐츠 타입 설정 (application/json)
+
+
