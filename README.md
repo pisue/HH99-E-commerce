@@ -1,5 +1,6 @@
 # 📦 E-Commerce 서비스
-
+## API Swagger 적용
+- [잔액 충전 및 조회 API](docs/swagger.md)
 ## 프로젝트 개요
 
 - `e-커머스 상품 주문 서비스`를 구현해 봅니다.
