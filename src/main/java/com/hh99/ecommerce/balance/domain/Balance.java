@@ -1,11 +1,19 @@
 package com.hh99.ecommerce.balance.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "balance")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Balance {
 
     @Id
@@ -17,4 +25,8 @@ public class Balance {
 
     @Column(nullable = false)
     private BigDecimal amount;
+
+    public void charge(BigDecimal chargeAmount) {
+        this.amount = this.amount.add(chargeAmount);
+    }
 }

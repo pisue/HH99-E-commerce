@@ -22,6 +22,14 @@ erDiagram
         decimal amount "잔액 금액"
     }
 
+   %% 충전/사용 내역
+   balance_history {
+      integer id PK "충전 내역 ID"
+      integer balance_id FK "잔액 ID"
+      varchar type "type: charge/use"     
+      decimal amount "잔액 금액"
+   }
+
     %% 상품 테이블
     product {
         integer id PK "상품 ID"
