@@ -6,6 +6,9 @@ import com.hh99.ecommerce.cart.infra.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -20,5 +23,11 @@ public class CartService {
         CartDomain cartDomain = cart.toDomain();
         cartDomain.deletedAt();
         cartRepository.save(cartDomain.toEntity());
+    }
+
+    public List<CartDomain> getCarts(Long userId) {
+        return cartRepository.findByUserIdAndDeletedAtIsNull(userId).stream()
+                .map(Cart::toDomain)
+                .collect(Collectors.toList());
     }
 }

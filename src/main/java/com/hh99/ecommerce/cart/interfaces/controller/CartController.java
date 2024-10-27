@@ -1,5 +1,6 @@
 package com.hh99.ecommerce.cart.interfaces.controller;
 
+import com.hh99.ecommerce.cart.application.CartUseCase;
 import com.hh99.ecommerce.cart.domain.CartDomain;
 import com.hh99.ecommerce.cart.domain.CartService;
 import com.hh99.ecommerce.cart.interfaces.CartRequest;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartController implements SwaggerCartController {
     private final CartService cartService;
+    private final CartUseCase cartUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -26,10 +28,7 @@ public class CartController implements SwaggerCartController {
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<CartResponse> getCarts(@PathVariable Long userId) {
-        //TODO : productId로 상품정보 조회 후 Response에 담에서 보내기
-
-
-        return null;
+        return cartUseCase.getCarts(userId);
     }
 
     @DeleteMapping("/{id}")
