@@ -1,8 +1,8 @@
 package com.hh99.ecommerce.order.application.service;
 
 import com.hh99.ecommerce.order.application.dto.CreateOrderDto;
-import com.hh99.ecommerce.order.domain.Order;
-import com.hh99.ecommerce.order.domain.OrderItem;
+import com.hh99.ecommerce.order.domain.entity.Order;
+import com.hh99.ecommerce.order.domain.entity.OrderItem;
 import com.hh99.ecommerce.order.domain.repository.OrderItemRepository;
 import com.hh99.ecommerce.order.domain.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;

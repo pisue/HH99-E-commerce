@@ -1,6 +1,5 @@
 package com.hh99.ecommerce.order.application.exception;
 
-import com.hh99.ecommerce.order.api.exception.OrderExceptionHandler;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

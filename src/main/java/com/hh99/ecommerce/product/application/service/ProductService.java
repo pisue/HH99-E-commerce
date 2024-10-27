@@ -1,8 +1,7 @@
 package com.hh99.ecommerce.product.application.service;
 
-import com.hh99.ecommerce.product.api.request.ProductRequest;
-import com.hh99.ecommerce.product.api.response.ProductResponse;
-import com.hh99.ecommerce.product.application.dto.ProductDto;
+import com.hh99.ecommerce.product.controller.request.ProductRequest;
+import com.hh99.ecommerce.product.controller.response.ProductResponse;
 import com.hh99.ecommerce.product.application.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.domain.Product;
 import com.hh99.ecommerce.product.domain.ProductRepository;

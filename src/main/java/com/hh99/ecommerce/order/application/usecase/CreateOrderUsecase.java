@@ -1,11 +1,10 @@
 package com.hh99.ecommerce.order.application.usecase;
 
 import com.hh99.ecommerce.balance.application.service.BalanceService;
-import com.hh99.ecommerce.order.api.request.CreateOrderRequest;
 import com.hh99.ecommerce.order.application.dto.CreateOrderDto;
 import com.hh99.ecommerce.order.application.exception.OutOfStockException;
 import com.hh99.ecommerce.order.application.service.OrderService;
-import com.hh99.ecommerce.product.api.response.ProductResponse;
+import com.hh99.ecommerce.product.controller.response.ProductResponse;
 import com.hh99.ecommerce.product.application.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
