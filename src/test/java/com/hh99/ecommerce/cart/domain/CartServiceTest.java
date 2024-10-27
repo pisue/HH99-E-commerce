@@ -3,6 +3,7 @@ package com.hh99.ecommerce.cart.domain;
 import com.hh99.ecommerce.cart.domain.exception.CartNotFoundException;
 import com.hh99.ecommerce.cart.infra.jpa.Cart;
 import com.hh99.ecommerce.cart.infra.repository.CartRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,4 +91,39 @@ class CartServiceTest {
         verify(cartRepository, times(1)).findById(cartId);
         verify(cartRepository, never()).save(any(Cart.class));
     }
+
+    @Test
+    @DisplayName("유저 정보로 장바구니 목록 조회")
+    public void testGetCarts() {
+        // given
+        Long userId = 1L;
+        Cart cart1 = Cart.builder()
+                .id(1L)
+                .userId(userId)
+                .productId(1L)
+                .quantity(3)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Cart cart2 = Cart.builder()
+                .id(2L)
+                .userId(userId)
+                .productId(3L)
+                .quantity(5)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        List<Cart> carts = List.of(cart1, cart2);
+        when(cartRepository.findByUserIdAndDeletedAtIsNull(userId)).thenReturn(carts);
+
+        // when
+        List<CartDomain> result = cartService.getCarts(userId);
+
+        // then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        /* 이 부분에 carts.toDomain과 result가 같은 값인지 확인하는 로직 추가가 필요함 */
+        verify(cartRepository, times(1)).findByUserIdAndDeletedAtIsNull(userId);
+    }
+
 }
