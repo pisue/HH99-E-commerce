@@ -1,4 +1,4 @@
-package com.hh99.ecommerce.product.application.exception;
+package com.hh99.ecommerce.product.domain.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,7 @@ import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
 import com.hh99.ecommerce.order.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
-import com.hh99.ecommerce.product.application.service.ProductService;
+import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

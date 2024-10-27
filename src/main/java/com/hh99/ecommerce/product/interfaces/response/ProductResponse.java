@@ -1,22 +1,26 @@
 package com.hh99.ecommerce.product.interfaces.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class ProductResponse {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private int stock;
-    private LocalDateTime regDate;
+    private final Long id;
+    private final String name;
+    private final String description;
+    private final BigDecimal price;
+    private final int stock;
+    private final LocalDateTime regDate;
+
+    @Builder
+    protected ProductResponse(Long id, String name, String description, BigDecimal price, int stock, LocalDateTime regDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.regDate = regDate;
+    }
 }

@@ -1,8 +1,9 @@
-package com.hh99.ecommerce.product.application.service;
+package com.hh99.ecommerce.product.domain;
 
+import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
-import com.hh99.ecommerce.product.application.exception.ProductNotFoundException;
+import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +23,9 @@ public class ProductService {
 
     @Cacheable(value = "products", key = "#productId")
     @Transactional
-    public ProductResponse getProduct(Long productId) {
+    public ProductDomain getProduct(Long productId) {
         return productRepository.findById(productId)
-                .map(product -> ProductResponse.builder()
-                        .id(productId)
-                        .stock(product.getStock())
-                        .name(product.getName())
-                        .price(product.getPrice())
-                        .regDate(product.getRegDate())
-                        .description(product.getDescription())
-                        .build())
+                .map(Product::toDomain)
                 .orElseThrow(ProductNotFoundException::new);
     }
 

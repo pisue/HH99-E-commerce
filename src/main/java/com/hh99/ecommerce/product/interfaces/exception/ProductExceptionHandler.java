@@ -1,7 +1,7 @@
 package com.hh99.ecommerce.product.interfaces.exception;
 
 import com.hh99.ecommerce.common.response.ErrorResponse;
-import com.hh99.ecommerce.product.application.exception.ProductNotFoundException;
+import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

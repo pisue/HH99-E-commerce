@@ -1,18 +1,16 @@
 package com.hh99.ecommerce.product.infra;
 
+import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "product")
 @Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "product")
 public class Product {
 
     @Id
@@ -34,4 +32,29 @@ public class Product {
     @Column(name = "reg_date", nullable = false)
     private LocalDateTime regDate;
 
+    @Builder
+    protected Product(Long id, String name, String description, BigDecimal price, Integer stock, LocalDateTime regDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.regDate = regDate;
+    }
+
+    public ProductDomain toDomain() {
+        return ProductDomain.builder()
+                .id(this.id)
+                .name(this.name)
+                .description(this.description)
+                .price(this.price)
+                .stock(this.stock)
+                .regDate(this.regDate)
+                .build();
+    }
+
+
+    public void setStock(int newStock) {
+        this.stock = newStock;
+    }
 }

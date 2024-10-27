@@ -1,8 +1,9 @@
 package com.hh99.ecommerce.product.interfaces.controller;
 
+import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
-import com.hh99.ecommerce.product.application.service.ProductService;
+import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,14 @@ public class ProductController implements SwaggerProductController{
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse getProduct(@PathVariable Long id) {
-        return productService.getProduct(id);
+        ProductDomain productDomain = productService.getProduct(id);
+        return ProductResponse.builder()
+                .id(productDomain.getId())
+                .name(productDomain.getName())
+                .description(productDomain.getDescription())
+                .price(productDomain.getPrice())
+                .stock(productDomain.getStock())
+                .build();
     }
 
     @PatchMapping("/{id}/stock")
@@ -47,9 +55,6 @@ public class ProductController implements SwaggerProductController{
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getPopularProducts() {
         List<ProductResponse> popularProductsResponse = new ArrayList<>();
-        popularProductsResponse.add(new ProductResponse(4L, "상품 D", "D 상품입니다.", new BigDecimal(10000), 50, LocalDateTime.now()));
-        popularProductsResponse.add(new ProductResponse(5L, "상품 E", "E 상품입니다.", new BigDecimal(20000), 100, LocalDateTime.now()));
-        popularProductsResponse.add(new ProductResponse(6L, "상품 F", "F 상품입니다.", new BigDecimal(30000), 70, LocalDateTime.now()));
 
         return popularProductsResponse;
     }
