@@ -40,17 +40,9 @@ public class ProductService {
         .orElseThrow(ProductNotFoundException::new);
     }
 
-    public List<ProductResponse> getProducts() {
+    public List<ProductDomain> getProducts() {
         return productRepository.findAll().stream()
-                .map(product -> ProductResponse.builder()
-                        .id(product.getId())
-                        .stock(product.getStock())
-                        .name(product.getName())
-                        .price(product.getPrice())
-                        .regDate(product.getRegDate())
-                        .description(product.getDescription())
-                        .build()
-                ).collect(Collectors.toList());
+                .map(Product::toDomain).collect(Collectors.toList());
     }
 
     public void create(ProductRequest productRequest) {

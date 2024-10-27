@@ -4,6 +4,7 @@ import com.hh99.ecommerce.balance.domain.BalanceService;
 import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
 import com.hh99.ecommerce.order.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.order.domain.OrderService;
+import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
 import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class CreateOrderUsecase {
 
     @Transactional
     public void execute(Long userId, Long productId, int quantity) {
-        ProductResponse product = productService.getProduct(productId);
+        ProductDomain product = productService.getProduct(productId);
         if (product.getStock() < quantity) throw new OutOfStockException();
 
         BigDecimal totalPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));

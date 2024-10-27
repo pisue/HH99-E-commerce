@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -29,7 +30,16 @@ public class ProductController implements SwaggerProductController{
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getProducts() {
-        return productService.getProducts();
+        List<ProductDomain> productDomains = productService.getProducts();
+        return productDomains.stream().map(
+                productDomain -> ProductResponse.builder()
+                        .id(productDomain.getId())
+                        .name(productDomain.getName())
+                        .description(productDomain.getDescription())
+                        .price(productDomain.getPrice())
+                        .stock(productDomain.getStock())
+                        .build()
+        ).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
