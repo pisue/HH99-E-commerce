@@ -3,7 +3,7 @@ package com.hh99.ecommerce.order.interfaces.controller;
 import com.hh99.ecommerce.order.interfaces.request.CreateOrderRequest;
 import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
-import com.hh99.ecommerce.order.application.usecase.CreateOrderUsecase;
+import com.hh99.ecommerce.order.application.usecase.OrderUsecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,12 @@ import java.util.List;
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController implements SwaggerOrderController{
-    private final CreateOrderUsecase createOrderUsecase;
+    private final OrderUsecase orderUsecase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody CreateOrderRequest request) {
-
-        //상품에서 바로 주문
-        //하나의 상품ID와 수량을 받는다
-        //상품을 상세검색한다 재고확인 -> 결재 -> 재고 차감
-        //주문내역 생성, 주문 아이템 정보 저장
-        createOrderUsecase.execute(request.getUserId(), request.getProductId(), request.getQuantity());
+        orderUsecase.createOrder(request.getUserId(), request.getProductOrderRequests());
     }
 
     @GetMapping("{userId}")

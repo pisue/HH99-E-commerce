@@ -1,19 +1,15 @@
 package com.hh99.ecommerce.order.infra.entity;
 
+import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "`order`")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Order {
 
@@ -30,4 +26,19 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
+
+    @Builder
+    protected Order(Long userId, LocalDateTime orderDate, BigDecimal totalPrice) {
+        this.userId = userId;
+        this.orderDate = orderDate;
+        this.totalPrice = totalPrice;
+    }
+
+    public OrderDomain toDomain() {
+        return OrderDomain.builder()
+                .userId(this.userId)
+                .orderDate(this.orderDate)
+                .totalPrice(this.totalPrice)
+                .build();
+    }
 }

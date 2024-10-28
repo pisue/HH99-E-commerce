@@ -1,17 +1,14 @@
 package com.hh99.ecommerce.order.infra.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_item")
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +25,12 @@ public class OrderItem {
 
     @Column(nullable = false)
     private BigDecimal itemPrice; // 상품 가격
+
+    @Builder
+    protected OrderItem(Long orderId, Long productId, Integer quantity, BigDecimal itemPrice) {
+        this.orderId = orderId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.itemPrice = itemPrice;
+    }
 }

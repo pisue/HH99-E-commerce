@@ -1,6 +1,7 @@
 package com.hh99.ecommerce.order.domain;
 
 import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
+import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.infra.repository.OrderItemRepository;
@@ -18,25 +19,24 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    public OrderDomain createOrder(Long userId, BigDecimal totalPrice) {
+        return orderRepository.save(
+                Order.builder()
+                        .userId(userId)
+                        .orderDate(LocalDateTime.now())
+                        .totalPrice(totalPrice)
+                        .build()
+        ).toDomain();
+    }
 
-    @Transactional
-    public void createOrder(CreateOrderDto dto) {
-        // 주문 생성
-        Order order = Order.builder()
-                .userId(dto.getUserId())
-                .orderDate(LocalDateTime.now())
-                .totalPrice(dto.getPrice().multiply(BigDecimal.valueOf(dto.getQuantity())))
-                .build();
-
-        Order savedOrder = orderRepository.save(order);
-
-        OrderItem orderItem = OrderItem.builder()
-                .orderId(savedOrder.getId())
-                .productId(dto.getProductId())
-                .quantity(dto.getQuantity())
-                .itemPrice(dto.getPrice())
-                .build();
-
-        orderItemRepository.save(orderItem);
+    public void createOrderItem(Long id, CreateOrderDto dto) {
+        orderItemRepository.save(
+                OrderItem.builder()
+                        .orderId(id)
+                        .productId(dto.getProductId())
+                        .quantity(dto.getQuantity())
+                        .itemPrice(dto.getPrice())
+                        .build()
+        );
     }
 }
