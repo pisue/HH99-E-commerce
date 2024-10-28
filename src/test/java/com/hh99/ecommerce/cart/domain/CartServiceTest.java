@@ -3,7 +3,6 @@ package com.hh99.ecommerce.cart.domain;
 import com.hh99.ecommerce.cart.domain.exception.CartNotFoundException;
 import com.hh99.ecommerce.cart.infra.jpa.Cart;
 import com.hh99.ecommerce.cart.infra.repository.CartRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
