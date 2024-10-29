@@ -1,6 +1,8 @@
 package com.hh99.ecommerce.product.interfaces.controller;
 
+import com.hh99.ecommerce.product.application.usecase.ProductUseCase;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
+import com.hh99.ecommerce.product.interfaces.request.PopularProductRequest;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
 import com.hh99.ecommerce.product.domain.ProductService;
@@ -18,8 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController implements SwaggerProductController{
-
     private final ProductService productService;
+    private final ProductUseCase productUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -63,10 +65,9 @@ public class ProductController implements SwaggerProductController{
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getPopularProducts() {
-        List<ProductResponse> popularProductsResponse = new ArrayList<>();
-
-        return popularProductsResponse;
+    public List<ProductResponse> getPopularProducts(@RequestBody PopularProductRequest popularProductRequest) {
+        /*return productUseCase.getPopularProducts();*/
+        return null;
     }
 
 
