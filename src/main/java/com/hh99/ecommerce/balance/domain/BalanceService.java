@@ -51,5 +51,7 @@ public class BalanceService {
     public void deductBalance(Long userId, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
         Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserBalanceNotFoundException::new);
+        balance.deduct(amount);
+        balanceRepository.save(balance);
     }
 }
