@@ -5,9 +5,12 @@ import com.hh99.ecommerce.order.application.dto.OrderValidationResult;
 import com.hh99.ecommerce.order.application.mapper.OrderMapper;
 import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
+import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
 import com.hh99.ecommerce.order.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.order.interfaces.request.ProductOrderRequest;
+import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
+import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +64,29 @@ public class OrderUsecase {
         validationResults.forEach(result ->
             orderService.createOrderItem(orderDomain.getId(), result.getCreateOrderDto())
         );
+    }
+
+    public List<OrderResponse> getOrders(Long userId) {
+        return orderService.getOrders(userId).stream().map(orderDomain -> OrderResponse.builder()
+                .id(orderDomain.getId())
+                .orderDate(orderDomain.getOrderDate())
+                .totalPrice(orderDomain.getTotalPrice())
+                .orderItems(orderService.getOrderItems(orderDomain.getId()).stream()
+                        .map(OrderItemDomain::toResponse)
+                        .collect(Collectors.toList()))
+                .build()).toList();
+    }
+
+    public OrderResponse getOrder(Long userId, Long orderId) {
+        OrderDomain orderDomain = orderService.getOrder(userId, orderId);
+        List<OrderItemDomain> orderItemDomains = orderService.getOrderItems(orderDomain.getId());
+        return OrderResponse.builder()
+                .id(orderDomain.getId())
+                .orderDate(orderDomain.getOrderDate())
+                .totalPrice(orderDomain.getTotalPrice())
+                .orderItems(orderItemDomains.stream()
+                        .map(OrderItemDomain::toResponse)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
