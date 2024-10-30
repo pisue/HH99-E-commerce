@@ -1,17 +1,23 @@
 package com.hh99.ecommerce.order.interfaces.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class OrderResponse {
-   private Long id;
-   private LocalDateTime orderDate;
-   private BigDecimal totalPrice;
+   private final Long id;
+   private final LocalDateTime orderDate;
+   private final BigDecimal totalPrice;
+   private final List<OrderItemResponse> orderItems;
+
+   @Builder
+   protected OrderResponse(Long id, LocalDateTime orderDate, BigDecimal totalPrice, List<OrderItemResponse> orderItems) {
+      this.id = id;
+      this.orderDate = orderDate;
+      this.totalPrice = totalPrice;
+      this.orderItems = orderItems;
+   }
 }

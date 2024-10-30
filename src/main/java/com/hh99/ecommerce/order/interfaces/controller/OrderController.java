@@ -18,30 +18,23 @@ import java.util.List;
 public class OrderController implements SwaggerOrderController{
     private final OrderUsecase orderUsecase;
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody CreateOrderRequest request) {
         orderUsecase.createOrder(request.getUserId(), request.getProductOrderRequests());
     }
 
-    @GetMapping("{userId}")
+    @Override
+    @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> getOrders(@PathVariable Long userId) {
-        OrderResponse ordersResponse = new OrderResponse(1L, LocalDateTime.now(), new BigDecimal(100000));
-        OrderResponse ordersResponse2 = new OrderResponse(1L, LocalDateTime.now(), new BigDecimal(100000));
-
-        return List.of(ordersResponse, ordersResponse2);
+        return orderUsecase.getOrders(userId);
     }
 
-    @GetMapping("{userId}/{orderId}")
-    public List<OrderItemResponse> getOrder(@PathVariable Long userId, @PathVariable Long orderId) {
-        OrderItemResponse orderItemResponse = new OrderItemResponse(1L, 1L, 3L, 2, new BigDecimal(10000));
-        OrderItemResponse orderItemResponse2 = new OrderItemResponse(2L, 1L, 4L, 1, new BigDecimal(23000));
-        OrderItemResponse orderItemResponse3 = new OrderItemResponse(3L, 1L, 8L, 5, new BigDecimal(50000));
-
-        return List.of(orderItemResponse, orderItemResponse2, orderItemResponse3);
+    @Override
+    @GetMapping("/{userId}/{orderId}")
+    public OrderResponse getOrder(@PathVariable Long userId, @PathVariable Long orderId) {
+        return orderUsecase.getOrder(userId, orderId);
     }
-
-
-
 }
