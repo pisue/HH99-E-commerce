@@ -1,5 +1,6 @@
 package com.hh99.ecommerce.product.domain.dto;
 
+import com.hh99.ecommerce.product.application.model.ProductInfo;
 import com.hh99.ecommerce.product.infra.Product;
 import lombok.*;
 
@@ -34,5 +35,20 @@ public class ProductDomain {
                 .stock(this.stock)
                 .regDate(this.regDate)
                 .build();
+    }
+
+    public ProductInfo toProductInfo() {
+        return ProductInfo.builder()
+                .id(this.id)
+                .name(this.name)
+                .description(this.description)
+                .price(this.price)
+                .stock(this.stock)
+                .regDate(this.regDate)
+                .build();
+
+
+
+
     }
 }

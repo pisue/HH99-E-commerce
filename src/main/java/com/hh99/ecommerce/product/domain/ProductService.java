@@ -2,7 +2,6 @@ package com.hh99.ecommerce.product.domain;
 
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
-import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
 import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
@@ -55,4 +54,12 @@ public class ProductService {
                 .description(productRequest.getDescription())
                 .build());
     }
+
+    public List<ProductDomain> getPopularProducts(Integer topNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return productRepository.findPopularProducts(topNumber, startDateTime, endDateTime)
+                .stream()
+                .map(Product::toDomain)
+                .toList();
+    }
+
 }
