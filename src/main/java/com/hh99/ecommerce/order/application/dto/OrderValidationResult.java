@@ -1,10 +1,9 @@
 package com.hh99.ecommerce.order.application.dto;
 
-import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
+import com.hh99.ecommerce.order.domain.dto.CreateOrderItemDto;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
@@ -12,12 +11,12 @@ import java.math.BigDecimal;
 public class OrderValidationResult {
     private final ProductDomain productDomain;
     private final BigDecimal totalPrice;
-    private final CreateOrderDto createOrderDto;
+    private final CreateOrderItemDto createOrderItemDto;
 
     @Builder
-    protected OrderValidationResult(ProductDomain productDomain, BigDecimal totalPrice, CreateOrderDto createOrderDto) {
+    protected OrderValidationResult(ProductDomain productDomain, BigDecimal totalPrice, CreateOrderItemDto createOrderItemDto) {
         this.productDomain = productDomain;
         this.totalPrice = totalPrice;
-        this.createOrderDto = createOrderDto;
+        this.createOrderItemDto = createOrderItemDto;
     }
 }

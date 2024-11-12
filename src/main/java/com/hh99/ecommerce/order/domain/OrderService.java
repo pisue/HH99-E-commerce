@@ -1,16 +1,14 @@
 package com.hh99.ecommerce.order.domain;
 
-import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
+import com.hh99.ecommerce.order.domain.dto.CreateOrderItemDto;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.infra.repository.OrderItemRepository;
 import com.hh99.ecommerce.order.infra.repository.OrderRepository;
-import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,15 +31,8 @@ public class OrderService {
         ).toDomain();
     }
 
-    public void createOrderItem(Long id, CreateOrderDto dto) {
-        orderItemRepository.save(
-                OrderItem.builder()
-                        .orderId(id)
-                        .productId(dto.getProductId())
-                        .quantity(dto.getQuantity())
-                        .itemPrice(dto.getPrice())
-                        .build()
-        );
+    public void createOrderItem(OrderItemDomain orderItemDomain) {
+        orderItemRepository.save(orderItemDomain.generateOrderItem());
     }
 
     public List<OrderDomain> getOrders(Long userId) {
@@ -49,8 +40,8 @@ public class OrderService {
                 .map(Order::toDomain).collect(Collectors.toList());
     }
 
-    public List<OrderItemDomain> getOrderItems(Long id) {
-        return orderItemRepository.findAllById(id).stream()
+    public List<OrderItemDomain> getOrderItemsByOrderId(Long orderId) {
+        return orderItemRepository.findAllByOrderId(orderId).stream()
                 .map(OrderItem::toDomain).collect(Collectors.toList());
     }
 
