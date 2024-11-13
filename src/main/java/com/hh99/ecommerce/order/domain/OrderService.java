@@ -3,6 +3,7 @@ package com.hh99.ecommerce.order.domain;
 import com.hh99.ecommerce.order.domain.dto.CreateOrderItemDto;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
+import com.hh99.ecommerce.order.domain.exception.OrderNotFoundException;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.infra.repository.OrderItemRepository;
@@ -48,6 +49,8 @@ public class OrderService {
     }
 
     public OrderDomain getOrder(Long id) {
-        return orderRepository.findById(id).orElseThrow().toDomain();
+        return orderRepository.findById(id)
+                .orElseThrow(OrderNotFoundException::new)
+                .toDomain();
     }
 }
