@@ -30,8 +30,8 @@ public class OrderController implements SwaggerOrderController{
     }
 
     @Override
-    @GetMapping("/{userId}/{orderId}")
-    public OrderResponse getOrder(@PathVariable Long userId, @PathVariable Long orderId) {
-        return orderUsecase.getOrder(userId, orderId);
+    @GetMapping("/{id}")
+    public OrderResponse getOrder(@PathVariable Long id) {
+        return orderUsecase.getOrder(id);
     }
 }

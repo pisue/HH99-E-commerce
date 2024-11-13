@@ -73,8 +73,8 @@ public class OrderUseCase {
                 .build()).toList();
     }
 
-    public OrderResponse getOrder(Long userId, Long orderId) {
-        OrderDomain orderDomain = orderService.getOrder(userId, orderId);
+    public OrderResponse getOrder(Long id) {
+        OrderDomain orderDomain = orderService.getOrder(id);
         List<OrderItemDomain> orderItemDomains = orderService.getOrderItemsByOrderId(orderDomain.getId());
         return OrderResponse.builder()
                 .id(orderDomain.getId())

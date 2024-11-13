@@ -19,6 +19,8 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -151,23 +153,21 @@ class OrderServiceTest {
     void getOrder() {
         //Given
         Long orderId = 1L;
-        Long userId = 1L;
         Order order = Order.builder()
                 .id(1L)
-                .userId(userId)
+                .userId(3L)
                 .totalPrice(new BigDecimal("300000"))
                 .orderDate(LocalDateTime.now())
                 .build();
-        when(orderRepository.findByIdAndUserId(userId, orderId)).thenReturn(order);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.ofNullable(order));
 
         //When
-        OrderDomain orderDomain = orderService.getOrder(userId, orderId);
+        OrderDomain orderDomain = orderService.getOrder(orderId);
         Order result = orderDomain.toEntity();
 
         //Then
-        verify(orderRepository, times(1)).findByIdAndUserId(userId, orderId);
+        verify(orderRepository, times(1)).findById(orderId);
         assertEquals(orderId, result.getId());
-        assertEquals(userId, result.getUserId());
-        assertEquals(order.getId(), result.getId());
+        assertEquals(Objects.requireNonNull(order).getId(), result.getId());
     }
 }

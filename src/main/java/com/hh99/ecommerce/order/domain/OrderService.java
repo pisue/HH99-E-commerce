@@ -47,7 +47,7 @@ public class OrderService {
                 .toList();
     }
 
-    public OrderDomain getOrder(Long userId, Long orderId) {
-        return orderRepository.findByIdAndUserId(orderId, userId).toDomain();
+    public OrderDomain getOrder(Long id) {
+        return orderRepository.findById(id).orElseThrow().toDomain();
     }
 }
