@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    @Cacheable(value = "products", key = "#productId")
     @Transactional
     public ProductDomain getProduct(Long productId) {
         return productRepository.findById(productId)
@@ -28,7 +27,6 @@ public class ProductService {
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    @CacheEvict(value = "products", key = "#productId")
     @Transactional
     public void updateProductStock(Long productId, int newStock) {
         productRepository.findById(productId)
