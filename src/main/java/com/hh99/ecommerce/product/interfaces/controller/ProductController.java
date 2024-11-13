@@ -24,8 +24,13 @@ public class ProductController implements SwaggerProductController{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addProduct(@RequestBody ProductRequest productRequest) {
-        productService.create(productRequest);
+    public void addProduct(@RequestBody ProductRequest request) {
+        productService.create(ProductDomain.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .stock(request.getStock())
+                .price(request.getPrice())
+                .build());
     }
 
     @GetMapping

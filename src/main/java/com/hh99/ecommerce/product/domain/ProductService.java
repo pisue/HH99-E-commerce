@@ -39,18 +39,12 @@ public class ProductService {
 
     public List<ProductDomain> getProducts() {
         return productRepository.findAll().stream()
-                .map(Product::toDomain).collect(Collectors.toList());
+                .map(Product::toDomain)
+                .toList();
     }
 
-    public void create(ProductRequest productRequest) {
-        productRepository.save(Product.builder()
-                .id(productRequest.getId())
-                .stock(productRequest.getStock())
-                .name(productRequest.getName())
-                .price(productRequest.getPrice())
-                .regDate(LocalDateTime.now())
-                .description(productRequest.getDescription())
-                .build());
+    public void create(ProductDomain productDomain) {
+        productRepository.save(productDomain.generateProduct());
     }
 
     public List<ProductDomain> getPopularProducts(Integer topNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {

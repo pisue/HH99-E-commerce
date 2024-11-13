@@ -26,6 +26,16 @@ public class ProductDomain {
         this.regDate = regDate;
     }
 
+    public Product generateProduct() {
+        return Product.builder()
+                .name(this.name)
+                .description(this.description)
+                .price(this.price)
+                .stock(this.stock)
+                .regDate(LocalDateTime.now())
+                .build();
+    }
+
     public Product toEntity() {
         return Product.builder()
                 .id(this.id)
@@ -46,9 +56,5 @@ public class ProductDomain {
                 .stock(this.stock)
                 .regDate(this.regDate)
                 .build();
-
-
-
-
     }
 }
