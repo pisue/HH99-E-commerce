@@ -18,5 +18,5 @@ public interface SwaggerOrderController {
     List<OrderResponse> getOrders(@PathVariable Long userId);
 
     @Operation(summary = "주문정보 상세 조회")
-    OrderResponse getOrder(Long userId, Long orderId);
+    OrderResponse getOrder(Long id);
 }
