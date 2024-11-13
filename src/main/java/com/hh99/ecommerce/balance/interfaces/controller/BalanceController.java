@@ -28,13 +28,13 @@ public class BalanceController implements SwaggerBalanceController{
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public BalanceResponse getBalance(@PathVariable Long userId) {
-        return balanceService.getBalance(userId);
+        return balanceService.getBalance(userId).toResponse();
     }
 
     @Override
     @PatchMapping("/{userId}")
     public void deductBalance(@PathVariable Long userId,@RequestBody BigDecimal amount) {
-        balanceService.deductBalance(userId, amount);
+        balanceService.deduct(userId, amount);
     }
 
 

@@ -1,5 +1,7 @@
 package com.hh99.ecommerce.balance.domain;
 
+import com.hh99.ecommerce.balance.domain.dto.BalanceDomain;
+import com.hh99.ecommerce.balance.domain.exception.BalanceNotEnoughException;
 import com.hh99.ecommerce.balance.domain.exception.InvalidAmountException;
 import com.hh99.ecommerce.balance.interfaces.response.BalanceResponse;
 import com.hh99.ecommerce.balance.domain.exception.UserBalanceNotFoundException;
@@ -24,34 +26,36 @@ public class BalanceService {
     @Transactional
     public void charge(Long userId, BigDecimal amount) {
 
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidAmountException();
-        }
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
 
-        Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserBalanceNotFoundException::new);
+        Balance balance = balanceRepository.findByUserId(userId)
+                .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)));
         
         balance.charge(amount);
-        balanceRepository.save(balance);
-        
+
         BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.CHARGE, amount);
         balanceHistoryRepository.save(history);
     }
 
-    public BalanceResponse getBalance(Long userId) {
+    public BalanceDomain getBalance(Long userId) {
        return balanceRepository.findById(userId)
-               .map(balance -> BalanceResponse.builder()
-                       .amount(balance.getAmount())
-                       .userId(balance.getUserId())
-                       .id(balance.getId())
-                       .build())
-               .orElseThrow(UserBalanceNotFoundException::new);
+               .map(Balance::toDomain)
+               .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)).toDomain());
     }
 
     @Transactional
-    public void deductBalance(Long userId, BigDecimal amount) {
+    public void deduct(Long userId, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
-        Balance balance = balanceRepository.findByUserId(userId).orElseThrow(UserBalanceNotFoundException::new);
+
+        Balance balance = balanceRepository.findByUserId(userId)
+                .orElseThrow(UserBalanceNotFoundException::new);
+
+        if(balance.getAmount().compareTo(amount) < 0) throw new BalanceNotEnoughException();
+
         balance.deduct(amount);
-        balanceRepository.save(balance);
+
+        BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.DEDUCT, amount);
+        balanceHistoryRepository.save(history);
     }
+
 }

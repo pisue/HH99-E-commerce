@@ -53,7 +53,7 @@ public class OrderUseCase {
         }
 
         // 포인트 차감
-        balanceService.deductBalance(userId, totalPrice);
+        balanceService.deduct(userId, totalPrice);
 
         OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
 
