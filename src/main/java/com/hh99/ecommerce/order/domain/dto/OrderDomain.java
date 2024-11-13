@@ -28,6 +28,7 @@ public class OrderDomain {
 
     public Order toEntity() {
         return Order.builder()
+                .id(this.id)
                 .userId(this.userId)
                 .orderDate(this.orderDate)
                 .totalPrice(this.totalPrice)

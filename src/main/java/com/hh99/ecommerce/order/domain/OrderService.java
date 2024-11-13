@@ -37,12 +37,14 @@ public class OrderService {
 
     public List<OrderDomain> getOrders(Long userId) {
         return orderRepository.findAllByUserId(userId).stream()
-                .map(Order::toDomain).collect(Collectors.toList());
+                .map(Order::toDomain)
+                .toList();
     }
 
     public List<OrderItemDomain> getOrderItemsByOrderId(Long orderId) {
         return orderItemRepository.findAllByOrderId(orderId).stream()
-                .map(OrderItem::toDomain).collect(Collectors.toList());
+                .map(OrderItem::toDomain)
+                .toList();
     }
 
     public OrderDomain getOrder(Long userId, Long orderId) {
