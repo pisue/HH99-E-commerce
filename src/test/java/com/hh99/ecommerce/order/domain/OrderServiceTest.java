@@ -2,6 +2,7 @@ package com.hh99.ecommerce.order.domain;
 
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
+import com.hh99.ecommerce.order.domain.exception.OrderNotFoundException;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.infra.repository.OrderItemRepository;
@@ -149,7 +150,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("유저Id와 주문Id로 주문조회")
+    @DisplayName("주문 상세 조회")
     void getOrder() {
         //Given
         Long orderId = 1L;
@@ -169,5 +170,21 @@ class OrderServiceTest {
         verify(orderRepository, times(1)).findById(orderId);
         assertEquals(orderId, result.getId());
         assertEquals(Objects.requireNonNull(order).getId(), result.getId());
+    }
+
+    @Test
+    @DisplayName("주문 정보 존재하지 않을 때")
+    void getOrderNotFound() {
+        //Given
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //When
+        OrderNotFoundException exception = assertThrows(
+                OrderNotFoundException.class,
+                () -> orderService.getOrder(anyLong())
+        );
+
+        assertEquals("주문정보가 존재하지 않습니다.", exception.getMessage());
+        verify(orderRepository, times(1)).findById(anyLong());
     }
 }
