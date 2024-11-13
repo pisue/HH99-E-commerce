@@ -61,6 +61,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 상품 저장")
     void createOrderItem() {
         //Given
         OrderItemDomain orderItemDomain = OrderItemDomain.builder()
@@ -80,6 +81,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문목록 조회")
     void getOrders() {
         //Given
         Long userId = 1L;
