@@ -1,0 +1,23 @@
+#,Query_ID,Duration,Query
+1,260,0.0001325,SHOW WARNINGS
+2,261,0.00017725,SELECT @@session.transaction_isolation
+3,262,0.00018025,SELECT @@session.transaction_isolation
+4,263,0.00014275,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ set session transaction read write
+5,264,0.00017975,SELECT @@session.transaction_read_only
+6,265,0.00016575,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ select database()
+7,266,0.000172,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ SET net_write_timeout=600
+8,267,0.0001335,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ SET SQL_SELECT_LIMIT=501
+9,268,7.32441125,"/* ApplicationName=IntelliJ IDEA 2024.2.4 */ SELECT p.*
+FROM product p
+JOIN order_item oi ON p.id = oi.product_id
+WHERE oi.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 DAY) AND NOW()
+AND oi.order_status = 'COMPLETED'
+GROUP BY oi.product_id
+ORDER BY SUM(oi.quantity) DESC
+LIMIT 5"
+10,269,0.00017225,SELECT @@session.transaction_isolation
+11,270,0.000228,SELECT @@session.transaction_isolation
+12,271,0.0001405,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ set session transaction read write
+13,272,0.0001795,SELECT @@session.transaction_read_only
+14,273,0.00014425,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ SET net_write_timeout=600
+15,274,0.00014075,/* ApplicationName=IntelliJ IDEA 2024.2.4 */ SET SQL_SELECT_LIMIT=DEFAULT

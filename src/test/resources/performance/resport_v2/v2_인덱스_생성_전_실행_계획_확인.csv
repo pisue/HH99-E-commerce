@@ -1,0 +1,4 @@
+#,id,select_type,table,partitions,type,possible_keys,key,key_len,ref,rows,filtered,Extra
+1,1,PRIMARY,<derived2>,,ALL,,,,,5,100,
+2,1,PRIMARY,p,,eq_ref,PRIMARY,PRIMARY,8,temp.product_id,1,100,
+3,2,DERIVED,order_item,,ALL,,,,,4085911,5.56,Using where; Using temporary; Using filesort

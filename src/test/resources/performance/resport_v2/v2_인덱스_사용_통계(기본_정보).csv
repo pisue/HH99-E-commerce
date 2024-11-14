@@ -1,0 +1,4 @@
+order_item,0,PRIMARY,1,id,A,0,,,"",BTREE,"","",YES,
+order_item,1,idx_order_item_optimal,1,created_at,A,58802,,,"",BTREE,"","",YES,
+order_item,1,idx_order_item_optimal,2,order_status,A,63933,,,"",BTREE,"","",YES,
+order_item,1,idx_order_item_optimal,3,product_id,A,2370267,,,"",BTREE,"","",YES,
