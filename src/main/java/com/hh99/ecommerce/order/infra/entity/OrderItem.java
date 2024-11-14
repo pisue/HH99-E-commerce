@@ -29,21 +29,21 @@ public class OrderItem {
     @Column(name = "item_price", nullable = false)
     private BigDecimal itemPrice; // 상품 가격
 
-    @Column(name = "create_at", nullable = false)
-    private LocalDateTime createAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @Builder
-    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createAt, OrderStatus orderStatus) {
+    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt, OrderStatus orderStatus) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
         this.orderStatus = orderStatus;
     }
 
@@ -54,6 +54,7 @@ public class OrderItem {
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
+                .createdAt(this.createdAt)
                 .build();
     }
 

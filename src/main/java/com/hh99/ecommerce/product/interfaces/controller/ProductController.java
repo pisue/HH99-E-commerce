@@ -64,7 +64,7 @@ public class ProductController implements SwaggerProductController{
     @PatchMapping("/{id}/stock")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProductStock(@PathVariable Long id, @RequestParam int newStock) {
-        productService.updateProductStock(id, newStock);
+        productService.deductProductStock(id, newStock);
     }
 
     @GetMapping("/popular")

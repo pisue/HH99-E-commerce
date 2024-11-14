@@ -1,5 +1,6 @@
 package com.hh99.ecommerce.order.domain.dto;
 
+import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
 import lombok.Builder;
@@ -15,26 +16,28 @@ public class OrderItemDomain {
     private final Long productId;
     private final Integer quantity;
     private final BigDecimal itemPrice;
-    private final LocalDateTime createAt;
+    private final LocalDateTime createdAt;
+    private final OrderStatus orderStatus;
 
     @Builder
-    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createAt) {
+    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt, OrderStatus orderStatus) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
+        this.orderStatus = orderStatus;
     }
 
     public OrderItem generateOrderItem() {
         return OrderItem.builder()
-                .id(this.id)
                 .orderId(this.orderId)
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .orderStatus(OrderStatus.COMPLETED)
                 .build();
     }
 
@@ -45,6 +48,8 @@ public class OrderItemDomain {
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
+                .createdAt(this.createdAt)
+                .orderStatus(this.orderStatus)
                 .build();
     }
 
@@ -55,6 +60,7 @@ public class OrderItemDomain {
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
+                .orderStatus(this.orderStatus)
                 .build();
     }
 }

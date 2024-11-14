@@ -1,19 +1,16 @@
 package com.hh99.ecommerce.product.domain;
 
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
-import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
+import com.hh99.ecommerce.product.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +25,14 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProductStock(Long productId, int newStock) {
+    public void deductProductStock(Long productId, int quantity) {
         productRepository.findById(productId)
                 .map(product -> {
-                    product.setStock(newStock);
+                    int stock = product.getStock();
+                    if (stock < quantity) throw new OutOfStockException();
+                    product.setStock(stock - quantity);
                     return productRepository.save(product);
-        })
-        .orElseThrow(ProductNotFoundException::new);
+                }).orElseThrow(ProductNotFoundException::new);
     }
 
     public List<ProductDomain> getProducts() {
