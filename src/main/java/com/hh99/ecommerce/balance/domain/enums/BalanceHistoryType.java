@@ -1,4 +1,4 @@
-package com.hh99.ecommerce.balance.infra.entity;
+package com.hh99.ecommerce.balance.domain.enums;
 
 public enum BalanceHistoryType {
     CHARGE, DEDUCT
