@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         JOIN OrderItem oi ON p.id = oi.productId
         WHERE oi.createDateTime BETWEEN :startDateTime AND :endDateTime
         GROUP BY p.id
-        ORDER BY SUM(oi.productId) DESC
+        ORDER BY SUM(oi.quantity) DESC
         LIMIT :topNumber
     """)
     List<Product> findPopularProducts(
