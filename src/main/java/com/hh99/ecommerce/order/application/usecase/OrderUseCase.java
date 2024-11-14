@@ -3,15 +3,11 @@ package com.hh99.ecommerce.order.application.usecase;
 import com.hh99.ecommerce.balance.domain.BalanceService;
 import com.hh99.ecommerce.order.application.dto.OrderValidationResult;
 import com.hh99.ecommerce.order.application.mapper.OrderMapper;
-import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
-import com.hh99.ecommerce.order.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.order.interfaces.request.ProductOrderRequest;
-import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
-import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class OrderUsecase {
+public class OrderUseCase {
     private final OrderService orderService;
     private final ProductService productService;
     private final OrderMapper orderMapper;
@@ -57,12 +53,12 @@ public class OrderUsecase {
         }
 
         // 포인트 차감
-        balanceService.deductBalance(userId, totalPrice);
+        balanceService.deduct(userId, totalPrice);
 
         OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
 
         validationResults.forEach(result ->
-            orderService.createOrderItem(orderDomain.getId(), result.getCreateOrderDto())
+            orderService.createOrderItem(result.getCreateOrderItemDto().generateOrderItemDomain(orderDomain.getId()))
         );
     }
 
@@ -71,15 +67,15 @@ public class OrderUsecase {
                 .id(orderDomain.getId())
                 .orderDate(orderDomain.getOrderDate())
                 .totalPrice(orderDomain.getTotalPrice())
-                .orderItems(orderService.getOrderItems(orderDomain.getId()).stream()
+                .orderItems(orderService.getOrderItemsByOrderId(orderDomain.getId()).stream()
                         .map(OrderItemDomain::toResponse)
                         .collect(Collectors.toList()))
                 .build()).toList();
     }
 
-    public OrderResponse getOrder(Long userId, Long orderId) {
-        OrderDomain orderDomain = orderService.getOrder(userId, orderId);
-        List<OrderItemDomain> orderItemDomains = orderService.getOrderItems(orderDomain.getId());
+    public OrderResponse getOrder(Long id) {
+        OrderDomain orderDomain = orderService.getOrder(id);
+        List<OrderItemDomain> orderItemDomains = orderService.getOrderItemsByOrderId(orderDomain.getId());
         return OrderResponse.builder()
                 .id(orderDomain.getId())
                 .orderDate(orderDomain.getOrderDate())

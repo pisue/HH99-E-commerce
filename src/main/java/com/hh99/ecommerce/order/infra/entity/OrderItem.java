@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_item")
@@ -27,13 +28,17 @@ public class OrderItem {
     @Column(nullable = false)
     private BigDecimal itemPrice; // 상품 가격
 
+    @Column(nullable = false)
+    private LocalDateTime createDateTime;
+
     @Builder
-    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice) {
+    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createDateTime) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
+        this.createDateTime = createDateTime;
     }
 
     public OrderItemDomain toDomain() {
@@ -45,4 +50,5 @@ public class OrderItem {
                 .itemPrice(this.itemPrice)
                 .build();
     }
+
 }

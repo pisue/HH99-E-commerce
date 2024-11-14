@@ -1,5 +1,7 @@
 package com.hh99.ecommerce.balance.infra.entity;
 
+import com.hh99.ecommerce.balance.domain.dto.BalanceDomain;
+import com.hh99.ecommerce.balance.domain.exception.BalanceNotEnoughException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,5 +36,20 @@ public class Balance {
 
     public void deduct(BigDecimal deductAmount) {
         this.amount = this.amount.subtract(deductAmount);
+    }
+
+    public static Balance createNewBalance(Long userId) {
+        return Balance.builder()
+                .userId(userId)
+                .amount(BigDecimal.ZERO)
+                .build();
+    }
+
+    public BalanceDomain toDomain() {
+        return BalanceDomain.builder()
+                .id(this.id)
+                .userId(this.userId)
+                .amount(this.amount)
+                .build();
     }
 }

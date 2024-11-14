@@ -2,8 +2,7 @@ package com.hh99.ecommerce.order.application.mapper;
 
 import com.hh99.ecommerce.balance.domain.BalanceService;
 import com.hh99.ecommerce.order.application.dto.OrderValidationResult;
-import com.hh99.ecommerce.order.domain.OrderService;
-import com.hh99.ecommerce.order.domain.dto.CreateOrderDto;
+import com.hh99.ecommerce.order.domain.dto.CreateOrderItemDto;
 import com.hh99.ecommerce.order.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.product.domain.ProductService;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
@@ -28,13 +27,13 @@ public class OrderMapper {
         return OrderValidationResult.builder()
                 .productDomain(productDomain)
                 .totalPrice(totalPrice)
-                .createOrderDto(createOrderDto(userId, productId, quantity, productDomain.getPrice()))
+                .createOrderItemDto(createOrderItemDto(userId, productId, quantity, productDomain.getPrice()))
                 .build();
 
     }
 
-    private CreateOrderDto createOrderDto(Long userId, Long productId, int quantity, BigDecimal price) {
-        return CreateOrderDto.builder()
+    private CreateOrderItemDto createOrderItemDto(Long userId, Long productId, int quantity, BigDecimal price) {
+        return CreateOrderItemDto.builder()
                 .userId(userId)
                 .productId(productId)
                 .quantity(quantity)

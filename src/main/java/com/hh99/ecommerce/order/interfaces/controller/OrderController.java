@@ -1,22 +1,19 @@
 package com.hh99.ecommerce.order.interfaces.controller;
 
 import com.hh99.ecommerce.order.interfaces.request.CreateOrderRequest;
-import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
-import com.hh99.ecommerce.order.application.usecase.OrderUsecase;
+import com.hh99.ecommerce.order.application.usecase.OrderUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController implements SwaggerOrderController{
-    private final OrderUsecase orderUsecase;
+    private final OrderUseCase orderUsecase;
 
     @Override
     @PostMapping
@@ -33,8 +30,8 @@ public class OrderController implements SwaggerOrderController{
     }
 
     @Override
-    @GetMapping("/{userId}/{orderId}")
-    public OrderResponse getOrder(@PathVariable Long userId, @PathVariable Long orderId) {
-        return orderUsecase.getOrder(userId, orderId);
+    @GetMapping("/{id}")
+    public OrderResponse getOrder(@PathVariable Long id) {
+        return orderUsecase.getOrder(id);
     }
 }

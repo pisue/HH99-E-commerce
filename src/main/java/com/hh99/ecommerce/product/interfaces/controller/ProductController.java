@@ -1,18 +1,17 @@
 package com.hh99.ecommerce.product.interfaces.controller;
 
+import com.hh99.ecommerce.product.application.model.PopularProductInfo;
 import com.hh99.ecommerce.product.application.usecase.ProductUseCase;
+import com.hh99.ecommerce.product.domain.ProductService;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.request.PopularProductRequest;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
+import com.hh99.ecommerce.product.interfaces.response.PopularProductResponse;
 import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
-import com.hh99.ecommerce.product.domain.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +24,13 @@ public class ProductController implements SwaggerProductController{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addProduct(@RequestBody ProductRequest productRequest) {
-        productService.create(productRequest);
+    public void addProduct(@RequestBody ProductRequest request) {
+        productService.create(ProductDomain.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .stock(request.getStock())
+                .price(request.getPrice())
+                .build());
     }
 
     @GetMapping
@@ -65,9 +69,10 @@ public class ProductController implements SwaggerProductController{
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> getPopularProducts(@RequestBody PopularProductRequest popularProductRequest) {
-        /*return productUseCase.getPopularProducts();*/
-        return null;
+    public List<PopularProductResponse> getPopularProducts(@RequestBody PopularProductRequest popularProductRequest) {
+        return productUseCase.getPopularProducts(popularProductRequest.getTopNumber(), popularProductRequest.getLastDays()).stream()
+                .map(PopularProductInfo::toResponse)
+                .toList();
     }
 
 

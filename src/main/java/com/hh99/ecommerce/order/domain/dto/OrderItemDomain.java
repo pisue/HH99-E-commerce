@@ -11,22 +11,36 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 public class OrderItemDomain {
-    private final Long id; // 주문 상세 ID
-    private final Long orderId; // 주문 ID
-    private final Long productId; // 상품 ID
-    private final Integer quantity; // 주문 수량
-    private final BigDecimal itemPrice; // 상품 가격
+    private final Long id;
+    private final Long orderId;
+    private final Long productId;
+    private final Integer quantity;
+    private final BigDecimal itemPrice;
+    private final LocalDateTime createDateTime;
 
     @Builder
-    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice) {
+    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createDateTime) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
+        this.createDateTime = createDateTime;
+    }
+
+    public OrderItem generateOrderItem() {
+        return OrderItem.builder()
+                .id(this.id)
+                .orderId(this.orderId)
+                .productId(this.productId)
+                .quantity(this.quantity)
+                .itemPrice(this.itemPrice)
+                .createDateTime(LocalDateTime.now())
+                .build();
     }
 
     public OrderItem toEntity() {

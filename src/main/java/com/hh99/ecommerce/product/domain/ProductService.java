@@ -2,7 +2,6 @@ package com.hh99.ecommerce.product.domain;
 
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.interfaces.request.ProductRequest;
-import com.hh99.ecommerce.product.interfaces.response.ProductResponse;
 import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    @Cacheable(value = "products", key = "#productId")
     @Transactional
     public ProductDomain getProduct(Long productId) {
         return productRepository.findById(productId)
@@ -29,7 +27,6 @@ public class ProductService {
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    @CacheEvict(value = "products", key = "#productId")
     @Transactional
     public void updateProductStock(Long productId, int newStock) {
         productRepository.findById(productId)
@@ -42,17 +39,19 @@ public class ProductService {
 
     public List<ProductDomain> getProducts() {
         return productRepository.findAll().stream()
-                .map(Product::toDomain).collect(Collectors.toList());
+                .map(Product::toDomain)
+                .toList();
     }
 
-    public void create(ProductRequest productRequest) {
-        productRepository.save(Product.builder()
-                .id(productRequest.getId())
-                .stock(productRequest.getStock())
-                .name(productRequest.getName())
-                .price(productRequest.getPrice())
-                .regDate(LocalDateTime.now())
-                .description(productRequest.getDescription())
-                .build());
+    public void create(ProductDomain productDomain) {
+        productRepository.save(productDomain.generateProduct());
     }
+
+    public List<ProductDomain> getPopularProducts(Integer topNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return productRepository.findPopularProducts(topNumber, startDateTime, endDateTime)
+                .stream()
+                .map(Product::toDomain)
+                .toList();
+    }
+
 }

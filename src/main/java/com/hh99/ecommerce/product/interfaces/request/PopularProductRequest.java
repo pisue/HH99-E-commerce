@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class PopularProductRequest {
     private final Integer topNumber;
-    private final Integer productNumber;
+    private final Integer lastDays;
 
     @Builder
-    protected PopularProductRequest(Integer topNumber, Integer productNumber) {
+    protected PopularProductRequest(Integer topNumber, Integer lastDays) {
         this.topNumber = topNumber;
-        this.productNumber = productNumber;
+        this.lastDays = lastDays;
     }
 
 }

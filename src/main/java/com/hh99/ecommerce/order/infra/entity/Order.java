@@ -28,7 +28,8 @@ public class Order {
 
 
     @Builder
-    protected Order(Long userId, LocalDateTime orderDate, BigDecimal totalPrice) {
+    protected Order(Long id, Long userId, LocalDateTime orderDate, BigDecimal totalPrice) {
+        this.id = id;
         this.userId = userId;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
@@ -36,6 +37,7 @@ public class Order {
 
     public OrderDomain toDomain() {
         return OrderDomain.builder()
+                .id(this.id)
                 .userId(this.userId)
                 .orderDate(this.orderDate)
                 .totalPrice(this.totalPrice)
