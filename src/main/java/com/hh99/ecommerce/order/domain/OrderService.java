@@ -1,6 +1,5 @@
 package com.hh99.ecommerce.order.domain;
 
-import com.hh99.ecommerce.order.domain.dto.CreateOrderItemDto;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
 import com.hh99.ecommerce.order.domain.exception.OrderNotFoundException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

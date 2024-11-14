@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProductOrderRequest {
+public class OrderCreateRequest {
     private final Long productId;
     private final int quantity;
 
     @Builder
-    protected ProductOrderRequest(Long productId, int quantity) {
+    protected OrderCreateRequest(Long productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }

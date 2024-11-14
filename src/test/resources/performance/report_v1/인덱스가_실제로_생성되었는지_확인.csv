@@ -1,0 +1,4 @@
+#,Table,Non_unique,Key_name,Seq_in_index,Column_name,Collation,Cardinality,Sub_part,Packed,Null,Index_type,Comment,Index_comment,Visible,Expression
+1,order_item,0,PRIMARY,1,id,A,0,,,"",BTREE,"","",YES,
+2,order_item,1,idx_order_item_date_status,1,created_at,A,61649,,,"",BTREE,"","",YES,
+3,order_item,1,idx_order_item_date_status,2,order_status,A,75608,,,"",BTREE,"","",YES,

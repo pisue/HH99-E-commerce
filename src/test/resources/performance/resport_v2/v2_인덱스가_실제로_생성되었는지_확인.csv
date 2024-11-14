@@ -1,0 +1,5 @@
+#,Table,Non_unique,Key_name,Seq_in_index,Column_name,Collation,Cardinality,Sub_part,Packed,Null,Index_type,Comment,Index_comment,Visible,Expression
+1,order_item,0,PRIMARY,1,id,A,0,,,"",BTREE,"","",YES,
+2,order_item,1,idx_order_item_optimal,1,created_at,A,58802,,,"",BTREE,"","",YES,
+3,order_item,1,idx_order_item_optimal,2,order_status,A,63933,,,"",BTREE,"","",YES,
+4,order_item,1,idx_order_item_optimal,3,product_id,A,2370267,,,"",BTREE,"","",YES,

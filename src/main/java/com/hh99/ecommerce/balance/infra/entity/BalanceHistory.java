@@ -1,5 +1,6 @@
 package com.hh99.ecommerce.balance.infra.entity;
 
+import com.hh99.ecommerce.balance.domain.enums.BalanceHistoryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

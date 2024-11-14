@@ -78,7 +78,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("재고업데이트 성공")
-    void updateProductStock() {
+    void deductProductStock() {
         // Given
         Long id = 1L;
         int newStock = 98;
@@ -95,7 +95,7 @@ class ProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // When
-        productService.updateProductStock(id, newStock);
+        productService.deductProductStock(id, newStock);
 
         // Then
         verify(productRepository, times(1)).findById(id);
@@ -106,7 +106,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("재고업데이트 실패 - 상품이 존재하지 않음")
-    void updateProductStockNotFound() {
+    void deductProductStockNotFound() {
         // Given
         Long id = 1L;
         int newStock = 98;
@@ -115,7 +115,7 @@ class ProductServiceTest {
         // When & Then
         ProductNotFoundException exception = assertThrows(
             ProductNotFoundException.class,
-            () -> productService.updateProductStock(id, newStock)
+            () -> productService.deductProductStock(id, newStock)
         );
         
         assertEquals("조회하신 상품을 찾을 수 없습니다.", exception.getMessage());

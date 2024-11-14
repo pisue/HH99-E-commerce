@@ -2,6 +2,7 @@ package com.hh99.ecommerce.order.domain;
 
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
+import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import com.hh99.ecommerce.order.domain.exception.OrderNotFoundException;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
@@ -70,7 +71,8 @@ class OrderServiceTest {
                 .productId(1L)
                 .quantity(2)
                 .itemPrice(new BigDecimal("100000"))
-                .createDateTime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .orderStatus(OrderStatus.COMPLETED)
                 .build();
 
         //When
@@ -125,7 +127,8 @@ class OrderServiceTest {
                 .productId(1L)
                 .quantity(2)
                 .itemPrice(new BigDecimal("100000"))
-                .createDateTime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .orderStatus(OrderStatus.COMPLETED)
                 .build();
 
         OrderItem orderItem2 = OrderItem.builder()
@@ -134,7 +137,8 @@ class OrderServiceTest {
                 .productId(3L)
                 .quantity(1)
                 .itemPrice(new BigDecimal("9000"))
-                .createDateTime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .orderStatus(OrderStatus.COMPLETED)
                 .build();
         List<OrderItem> orderItems = List.of(orderItem, orderItem2);
         when(orderItemRepository.findAllByOrderId(orderId)).thenReturn(orderItems);

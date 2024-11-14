@@ -1,14 +1,14 @@
 package com.hh99.ecommerce.order.application.usecase;
 
 import com.hh99.ecommerce.balance.domain.BalanceService;
-import com.hh99.ecommerce.order.application.dto.OrderValidationResult;
-import com.hh99.ecommerce.order.application.mapper.OrderMapper;
+import com.hh99.ecommerce.order.application.dto.OrderItemCreateInfo;
+import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
-import com.hh99.ecommerce.order.domain.OrderService;
-import com.hh99.ecommerce.order.interfaces.request.ProductOrderRequest;
+import com.hh99.ecommerce.order.interfaces.request.OrderCreateRequest;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import com.hh99.ecommerce.product.domain.ProductService;
+import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,43 +22,40 @@ import java.util.stream.Collectors;
 public class OrderUseCase {
     private final OrderService orderService;
     private final ProductService productService;
-    private final OrderMapper orderMapper;
     private final BalanceService balanceService;
 
     @Transactional
-    public void createOrder(Long userId, List<ProductOrderRequest> productOrderRequests) {
-        List<OrderValidationResult> validationResults = productOrderRequests.stream()
-                .map(productOrderRequest -> {
-                    OrderValidationResult result = orderMapper.validateAndCreateOrderDetails(
-                        userId, 
-                        productOrderRequest.getProductId(), 
-                        productOrderRequest.getQuantity()
-                    );
-                    productService.updateProductStock(
-                        result.getProductDomain().getId(),
-                        result.getProductDomain().getStock() - productOrderRequest.getQuantity()
-                    );
-                    return result;
+    public void createOrder(Long userId, List<OrderCreateRequest> requests) {
+        // 상품정보 조회 및 OrderItemCreateInfo 생성
+        List<OrderItemCreateInfo> orderItemCreateInfos = requests.stream()
+                .map(request -> {
+                    ProductDomain productDomain = productService.getProduct(request.getProductId());
+                    return OrderItemCreateInfo.builder()
+                            .userId(userId)
+                            .productId(request.getProductId())
+                            .quantity(request.getQuantity())
+                            .price(productDomain.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())))
+                            .build();
                 })
                 .toList();
 
-        BigDecimal totalPrice = validationResults.stream()
-                .map(OrderValidationResult::getTotalPrice)
+        //재고 차감 및 총액 계산
+        BigDecimal totalPrice = orderItemCreateInfos.stream()
+                .map(orderItemCreateInfo -> {
+                    productService.deductProductStock(orderItemCreateInfo.getProductId(), orderItemCreateInfo.getQuantity());
+                    return orderItemCreateInfo.getPrice();
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        // 유저의 포인트 잔액 확인
-        BigDecimal userBalance = balanceService.getBalance(userId).getAmount();
-        if (userBalance.compareTo(totalPrice) < 0) {
-            throw new RuntimeException("포인트 잔액이 부족합니다.");
-        }
 
         // 포인트 차감
         balanceService.deduct(userId, totalPrice);
 
+        // 주문 생성
         OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
 
-        validationResults.forEach(result ->
-            orderService.createOrderItem(result.getCreateOrderItemDto().generateOrderItemDomain(orderDomain.getId()))
+        // 주문 상세정보 저장
+        orderItemCreateInfos.forEach(orderItemCreateInfo ->
+                orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
         );
     }
 

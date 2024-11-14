@@ -19,7 +19,7 @@ public class OrderController implements SwaggerOrderController{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody CreateOrderRequest request) {
-        orderUsecase.createOrder(request.getUserId(), request.getProductOrderRequests());
+        orderUsecase.createOrder(request.getUserId(), request.getOrderCreateRequests());
     }
 
     @Override
