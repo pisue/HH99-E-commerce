@@ -2,11 +2,6 @@ package com.hh99.ecommerce.order.domain.dto;
 
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
-import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,16 +15,16 @@ public class OrderItemDomain {
     private final Long productId;
     private final Integer quantity;
     private final BigDecimal itemPrice;
-    private final LocalDateTime createDateTime;
+    private final LocalDateTime createAt;
 
     @Builder
-    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createDateTime) {
+    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createAt) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
-        this.createDateTime = createDateTime;
+        this.createAt = createAt;
     }
 
     public OrderItem generateOrderItem() {
@@ -39,7 +34,7 @@ public class OrderItemDomain {
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
-                .createDateTime(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.hh99.ecommerce.order.infra.entity;
 
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
+import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,29 +17,34 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 주문 상세 ID
 
-    @Column(nullable = false)
+    @Column(name = "order_id", nullable = false)
     private Long orderId; // 주문 ID
 
-    @Column(nullable = false)
+    @Column(name = "product_id", nullable = false)
     private Long productId; // 상품 ID
 
     @Column(nullable = false)
     private Integer quantity; // 주문 수량
 
-    @Column(nullable = false)
+    @Column(name = "item_price", nullable = false)
     private BigDecimal itemPrice; // 상품 가격
 
-    @Column(nullable = false)
-    private LocalDateTime createDateTime;
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createAt;
+
+    @Column(name = "order_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Builder
-    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createDateTime) {
+    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createAt, OrderStatus orderStatus) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
-        this.createDateTime = createDateTime;
+        this.createAt = createAt;
+        this.orderStatus = orderStatus;
     }
 
     public OrderItemDomain toDomain() {
