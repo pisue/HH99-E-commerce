@@ -21,5 +21,5 @@ public interface SwaggerProductController {
     ProductResponse getProduct(Long id);
 
     @Operation(summary = "인기 판매 상품 조회 API")
-    List<PopularProductResponse> getPopularProducts(PopularProductRequest popularProductRequest);
+    List<PopularProductResponse> getPopularProducts(int topNumber, int lastDays);
 }

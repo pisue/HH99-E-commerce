@@ -61,7 +61,7 @@ public class ProductController implements SwaggerProductController{
                 .build();
     }
 
-    @PatchMapping("/{id}/stock")
+    @PatchMapping("/stock/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProductStock(@PathVariable Long id, @RequestParam int newStock) {
         productService.deductProductStock(id, newStock);
@@ -69,11 +69,14 @@ public class ProductController implements SwaggerProductController{
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public List<PopularProductResponse> getPopularProducts(@RequestBody PopularProductRequest popularProductRequest) {
-        return productUseCase.getPopularProducts(popularProductRequest.getTopNumber(), popularProductRequest.getLastDays()).stream()
+    public List<PopularProductResponse> getPopularProducts(
+            @RequestParam int topNumber,
+            @RequestParam int lastDays) {
+        return productUseCase.getPopularProducts(topNumber, lastDays).stream()
                 .map(PopularProductInfo::toResponse)
                 .toList();
     }
+
 
 
 }
