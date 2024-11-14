@@ -89,7 +89,7 @@ ON order_item (created_at, order_status);
     - 필요한 데이터만 먼저 필터링하여 메모리 사용 효율화
 
 ### 3.2 실제 테스트 결과 분석 (🚨🚨대실패🚨🚨)
-> [Index_test_v1_report.md](Index_test_v1_report)
+> [Index_test_v1_report.md](Index_test_v1_report.md)
 
 ---
 ## 4. 개선 방안
@@ -127,7 +127,7 @@ CREATE INDEX idx_order_item_optimal ON order_item
     - 메모리 사용량 여전히 높음 
 
 ### 5.3 상세 분석
-> [Index_test_v2_report.md](Index_test_v2_report)
+> [Index_test_v2_report.md](Index_test_v2_report.md)
 
 
 
