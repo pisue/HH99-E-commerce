@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         SELECT p FROM Product p
         JOIN OrderItem oi ON p.id = oi.productId
         WHERE oi.createDateTime BETWEEN :startDateTime AND :endDateTime
-        GROUP BY p.id
+        GROUP BY oi.productId
         ORDER BY SUM(oi.quantity) DESC
         LIMIT :topNumber
     """)
