@@ -21,8 +21,8 @@
   - [x] `spring` - RestControllerAdvice
 
 ## ✨ STEP: 09
-- [ ] 시스템 성격에 적합하게 Filter, Interceptor를 활용해 기능의 관점을 분리하여 개선
-- [ ] 모든 API가 정상적으로 기능을 제공하도록 완성
+- [x] 시스템 성격에 적합하게 Filter, Interceptor를 활용해 기능의 관점을 분리하여 개선
+- [x] 모든 API가 정상적으로 기능을 제공하도록 완성
 
 ## ✨ STEP: 10
 - [ ] 시나리오별 동시성 통합 테스트 작성
