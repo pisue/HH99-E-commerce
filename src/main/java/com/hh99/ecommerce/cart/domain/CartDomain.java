@@ -38,6 +38,7 @@ public class CartDomain {
         return Cart.builder()
                 .id(this.id)
                 .userId(this.userId)
+                .productId(this.productId)
                 .quantity(this.quantity)
                 .createdAt(this.createdAt)
                 .deletedAt(this.deletedAt)
