@@ -35,6 +35,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // Testcontainers Core
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.0'
+    // MySQL Testcontainers
+    testImplementation 'org.testcontainers:mysql:1.19.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 }
