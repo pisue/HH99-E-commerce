@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
   application:
@@ -14,6 +14,18 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      group-id: group-01
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.hh99.ecommerce.*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 springdoc:
   swagger-ui:

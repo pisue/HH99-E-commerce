@@ -1,15 +1,15 @@
-package com.hh99.ecommerce.order.interfaces.request;
+package com.hh99.ecommerce.order.domain.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderCreateRequest {
+public class OrderItemPayload {
     private Long productId;
     private Integer quantity;
 }

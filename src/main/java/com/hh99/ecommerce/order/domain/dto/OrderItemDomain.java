@@ -1,6 +1,5 @@
 package com.hh99.ecommerce.order.domain.dto;
 
-import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
 import com.hh99.ecommerce.order.interfaces.response.OrderItemResponse;
 import lombok.Builder;
@@ -17,17 +16,15 @@ public class OrderItemDomain {
     private final Integer quantity;
     private final BigDecimal itemPrice;
     private final LocalDateTime createdAt;
-    private final OrderStatus orderStatus;
 
     @Builder
-    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt, OrderStatus orderStatus) {
+    protected OrderItemDomain(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
         this.createdAt = createdAt;
-        this.orderStatus = orderStatus;
     }
 
     public OrderItem generateOrderItem() {
@@ -37,7 +34,6 @@ public class OrderItemDomain {
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
                 .createdAt(LocalDateTime.now())
-                .orderStatus(OrderStatus.COMPLETED)
                 .build();
     }
 
@@ -49,7 +45,6 @@ public class OrderItemDomain {
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
                 .createdAt(this.createdAt)
-                .orderStatus(this.orderStatus)
                 .build();
     }
 
@@ -60,7 +55,6 @@ public class OrderItemDomain {
                 .productId(this.productId)
                 .quantity(this.quantity)
                 .itemPrice(this.itemPrice)
-                .orderStatus(this.orderStatus)
                 .build();
     }
 }
