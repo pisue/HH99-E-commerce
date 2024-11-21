@@ -1,14 +1,19 @@
 # 📦 E-Commerce 서비스
 
-## [STEP 15]
-[🗓️ 인덱스 분석 보고서 ](docs/index/Index.md)
+## ✨ 보고서
+### [🗓️ 분산 트랜잭션 설계](docs/distributed-transaction.md)
+- 작성중... 원래 이렇게 카프카를 적용하려 했지만.. 실패..
 
-## TODO
+### [🗓️ 인덱스 분석 보고서 ](docs/index/Index.md)
+
+### [🗓️ 카프카 연동 및 테스트](docs/kafka/kafka.md)
+
+## ✨ TODO
 - [과제 체크리스트](docs/STEP.md)
 
-## API Swagger 적용
+## ✨ API Swagger 적용
 - [잔액 충전 및 조회 API](docs/swagger.md)
-## 프로젝트 개요
+## ✨ 프로젝트 개요
 
 - `e-커머스 상품 주문 서비스`를 구현해 봅니다.
 - 상품 주문에 필요한 메뉴 정보들을 구성하고 조회가 가능해야 합니다.
