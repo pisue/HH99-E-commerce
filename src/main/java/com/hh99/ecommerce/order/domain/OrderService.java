@@ -2,6 +2,7 @@ package com.hh99.ecommerce.order.domain;
 
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
+import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import com.hh99.ecommerce.order.domain.exception.OrderNotFoundException;
 import com.hh99.ecommerce.order.infra.entity.Order;
 import com.hh99.ecommerce.order.infra.entity.OrderItem;
@@ -25,6 +26,7 @@ public class OrderService {
                 Order.builder()
                         .userId(userId)
                         .orderDate(LocalDateTime.now())
+                        .orderStatus(OrderStatus.COMPLETED)
                         .totalPrice(totalPrice)
                         .build()
         ).toDomain();

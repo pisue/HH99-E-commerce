@@ -1,9 +1,11 @@
 package com.hh99.ecommerce.order.infra.entity;
 
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
-import com.hh99.ecommerce.order.domain.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,19 +34,15 @@ public class OrderItem {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "order_status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
 
     @Builder
-    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt, OrderStatus orderStatus) {
+    protected OrderItem(Long id, Long orderId, Long productId, Integer quantity, BigDecimal itemPrice, LocalDateTime createdAt) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.itemPrice = itemPrice;
         this.createdAt = createdAt;
-        this.orderStatus = orderStatus;
     }
 
     public OrderItemDomain toDomain() {
