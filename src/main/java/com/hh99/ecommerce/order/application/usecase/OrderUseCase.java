@@ -53,8 +53,7 @@ public class OrderUseCase {
                 orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
         );
 
-        // outbox 저장
-        OrderOutbox orderOutbox = orderEventService.save(orderDomain, requests);
+        OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
 
         // 이벤트 발행
         eventPublisher.publishEvent(orderOutbox);
