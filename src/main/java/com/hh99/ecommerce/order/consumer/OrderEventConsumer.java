@@ -15,17 +15,15 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderEventConsumer {
     private final OrderOutboxRepository orderOutboxRepository;
-    private final PlatformApiClient platformApiClient;
 
     @KafkaListener(topics = "order-create")
-    public void handleOrderCreated(OrderOutbox outbox) {
-        log.info("Received order created event: {}", outbox);
+    public void handleOrderCreated(OrderOutboxPayload payload) {
+        log.info("Received order created event: {}", payload);
+        
+        OrderOutbox outbox = orderOutboxRepository.findByOrderId(payload.getOrderId())
+            .orElseThrow(() -> new RuntimeException("Order not found: " + payload.getOrderId()));
+        
         outbox.updateStatus(OutboxStatus.PUBLISHED);
         orderOutboxRepository.save(outbox);
-
-        OrderOutboxPayload orderOutboxPayload = outbox.getPayloadAsObject();
-
-        log.info("Successfully published message for order: {}", outbox.getOrderId());
-        platformApiClient.sendMessageOrderInfo(orderOutboxPayload);
     }
 }
