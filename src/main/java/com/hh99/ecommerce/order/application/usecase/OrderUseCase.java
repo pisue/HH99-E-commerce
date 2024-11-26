@@ -26,7 +26,6 @@ public class OrderUseCase {
     private final OrderService orderService;
     private final ProductService productService;
     private final BalanceService balanceService;
-    private final OrderEventService orderEventService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
