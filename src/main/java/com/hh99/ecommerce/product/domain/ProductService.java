@@ -1,5 +1,6 @@
 package com.hh99.ecommerce.product.domain;
 
+import com.hh99.ecommerce.order.application.dto.OrderItemCreateInfo;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import com.hh99.ecommerce.product.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
@@ -25,14 +26,12 @@ public class ProductService {
     }
 
     @Transactional
-    public void deductProductStock(Long productId, int quantity) {
-        productRepository.findById(productId)
-                .map(product -> {
-                    int stock = product.getStock();
-                    if (stock < quantity) throw new OutOfStockException();
-                    product.setStock(stock - quantity);
-                    return productRepository.save(product);
-                }).orElseThrow(ProductNotFoundException::new);
+    public void deductProductStocks(List<OrderItemCreateInfo> orderItems) {
+        orderItems.forEach(item -> {
+            Product product = productRepository.findByIdWithPessimisticLock(item.getProductId())
+                    .orElseThrow(ProductNotFoundException::new);
+            product.deductStock(item.getQuantity());
+        });
     }
 
     public List<ProductDomain> getProducts() {

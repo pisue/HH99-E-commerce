@@ -2,7 +2,6 @@ package com.hh99.ecommerce.order.application.usecase;
 
 import com.hh99.ecommerce.balance.domain.BalanceService;
 import com.hh99.ecommerce.order.application.dto.OrderItemCreateInfo;
-import com.hh99.ecommerce.order.domain.OrderEventService;
 import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
@@ -14,7 +13,6 @@ import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,23 +20,21 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class OrderUseCase {
+public class OrderFacade {
     private final OrderService orderService;
     private final ProductService productService;
     private final BalanceService balanceService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
     public void createOrder(Long userId, List<OrderCreateRequest> requests) {
-        // 상품정보 조회 및 OrderItemCreateInfo 생성
         List<OrderItemCreateInfo> orderItemCreateInfos = getOrderItemsInfo(userId, requests);
 
-        //재고 차감 및 총액 계산
+        // 한 트랜잭션에서 모든 재고 차감 처리
+        productService.deductProductStocks(orderItemCreateInfos);
+
+        //차감 포인트 계산
         BigDecimal totalPrice = orderItemCreateInfos.stream()
-                .map(orderItemCreateInfo -> {
-                    productService.deductProductStock(orderItemCreateInfo.getProductId(), orderItemCreateInfo.getQuantity());
-                    return orderItemCreateInfo.getPrice();
-                })
+                .map(OrderItemCreateInfo::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 포인트 차감

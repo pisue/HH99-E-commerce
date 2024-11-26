@@ -49,8 +49,6 @@ public class BalanceService {
         Balance balance = balanceRepository.findByUserId(userId)
                 .orElseThrow(UserBalanceNotFoundException::new);
 
-        if(balance.getAmount().compareTo(amount) < 0) throw new BalanceNotEnoughException();
-
         balance.deduct(amount);
 
         BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.DEDUCT, amount);

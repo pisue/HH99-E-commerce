@@ -61,11 +61,11 @@ public class ProductController implements SwaggerProductController{
                 .build();
     }
 
-    @PatchMapping("/stock/{id}")
+/*    @PatchMapping("/stock/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProductStock(@PathVariable Long id, @RequestParam int newStock) {
         productService.deductProductStock(id, newStock);
-    }
+    }*/
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)

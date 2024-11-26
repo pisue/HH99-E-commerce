@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Balance {
+    @Version
+    private Long version;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,6 +38,7 @@ public class Balance {
     }
 
     public void deduct(BigDecimal deductAmount) {
+        if(this.amount.compareTo(deductAmount) < 0) throw new BalanceNotEnoughException();
         this.amount = this.amount.subtract(deductAmount);
     }
 
