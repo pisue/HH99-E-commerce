@@ -1,7 +1,7 @@
 package com.hh99.ecommerce.product.domain;
 
+import com.hh99.ecommerce.product.domain.dto.DeductStockInfo;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
-import com.hh99.ecommerce.product.domain.exception.OutOfStockException;
 import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
@@ -25,14 +25,11 @@ public class ProductService {
     }
 
     @Transactional
-    public void deductProductStock(Long productId, int quantity) {
-        productRepository.findById(productId)
-                .map(product -> {
-                    int stock = product.getStock();
-                    if (stock < quantity) throw new OutOfStockException();
-                    product.setStock(stock - quantity);
-                    return productRepository.save(product);
-                }).orElseThrow(ProductNotFoundException::new);
+    public ProductDomain deductProductStock(DeductStockInfo deductStockInfo) {
+        Product product = productRepository.findByIdWithPessimisticLock(deductStockInfo.getProductId())
+                .orElseThrow(ProductNotFoundException::new);
+        product.deductStock(deductStockInfo.getQuantity());
+        return product.toDomain();
     }
 
     public List<ProductDomain> getProducts() {
@@ -52,4 +49,10 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional
+    public void compensateStock(DeductStockInfo deductStockInfo) {
+        Product product = productRepository.findByIdWithPessimisticLock(deductStockInfo.getProductId())
+                .orElseThrow(ProductNotFoundException::new);
+        product.increaseStock(deductStockInfo.getQuantity());
+    }
 }

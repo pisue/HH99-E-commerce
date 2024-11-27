@@ -1,6 +1,7 @@
 package com.hh99.ecommerce.product.infra;
 
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
+import com.hh99.ecommerce.product.domain.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -54,7 +55,12 @@ public class Product {
     }
 
 
-    public void setStock(int newStock) {
-        this.stock = newStock;
+    public void deductStock(int quantity) {
+        if (this.stock < quantity) throw new OutOfStockException();
+        this.stock = this.stock - quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        this.stock = this.stock + quantity;
     }
 }

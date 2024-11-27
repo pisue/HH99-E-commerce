@@ -1,6 +1,6 @@
 package com.hh99.ecommerce.order.interfaces.controller;
 
-import com.hh99.ecommerce.order.application.usecase.OrderUseCase;
+import com.hh99.ecommerce.order.application.usecase.OrderFacade;
 import com.hh99.ecommerce.order.interfaces.request.CreateOrderRequest;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,25 +13,25 @@ import java.util.List;
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController implements SwaggerOrderController{
-    private final OrderUseCase orderUsecase;
+    private final OrderFacade orderFacade;
 
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody CreateOrderRequest request) {
-        orderUsecase.createOrder(request.getUserId(), request.getOrderCreateRequests());
+        orderFacade.createOrder(request.getUserId(), request.getOrderCreateRequests());
     }
 
     @Override
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> getOrders(@PathVariable Long userId) {
-        return orderUsecase.getOrders(userId);
+        return orderFacade.getOrders(userId);
     }
 
     @Override
     @GetMapping("/{id}")
     public OrderResponse getOrder(@PathVariable Long id) {
-        return orderUsecase.getOrder(id);
+        return orderFacade.getOrder(id);
     }
 }
