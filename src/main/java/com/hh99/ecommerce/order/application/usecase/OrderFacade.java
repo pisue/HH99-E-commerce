@@ -9,12 +9,14 @@ import com.hh99.ecommerce.order.infra.entity.OrderOutbox;
 import com.hh99.ecommerce.order.interfaces.request.OrderCreateRequest;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import com.hh99.ecommerce.product.domain.ProductService;
+import com.hh99.ecommerce.product.domain.dto.DeductStockInfo;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,30 +30,41 @@ public class OrderFacade {
 
     public void createOrder(Long userId, List<OrderCreateRequest> requests) {
         List<OrderItemCreateInfo> orderItemCreateInfos = getOrderItemsInfo(userId, requests);
+        List<DeductStockInfo> deductedStocks = new ArrayList<>();
 
-        // 한 트랜잭션에서 모든 재고 차감 처리
-        productService.deductProductStocks(orderItemCreateInfos);
+        try {
+            // 재고 차감 처리
+            requests.forEach(request -> {
+                DeductStockInfo deductStockInfo = request.toDeductStockInfo();
 
-        //차감 포인트 계산
-        BigDecimal totalPrice = orderItemCreateInfos.stream()
-                .map(OrderItemCreateInfo::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    productService.deductProductStock(deductStockInfo);
+                    deductedStocks.add(deductStockInfo);
+            });
 
-        // 포인트 차감
-        balanceService.deduct(userId, totalPrice);
+            //차감 포인트 계산
+            BigDecimal totalPrice = orderItemCreateInfos.stream()
+                    .map(OrderItemCreateInfo::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 주문 생성
-        OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
+            // 포인트 차감
+            balanceService.deduct(userId, totalPrice);
 
-        // 주문 상세정보 저장
-        orderItemCreateInfos.forEach(orderItemCreateInfo ->
-                orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
-        );
+            // 주문 생성
+            OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
 
-        OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
+            // 주문 상세정보 저장
+            orderItemCreateInfos.forEach(orderItemCreateInfo ->
+                    orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
+            );
 
-        // 이벤트 발행
-        eventPublisher.publishEvent(orderOutbox);
+            OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
+
+            // 이벤트 발행
+            eventPublisher.publishEvent(orderOutbox);
+        }catch (Exception e){
+            deductedStocks.forEach(productService::compensateStock);
+            throw e;
+        }
     }
 
     public List<OrderResponse> getOrders(Long userId) {

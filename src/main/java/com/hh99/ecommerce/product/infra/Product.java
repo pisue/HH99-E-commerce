@@ -59,4 +59,8 @@ public class Product {
         if (this.stock < quantity) throw new OutOfStockException();
         this.stock = this.stock - quantity;
     }
+
+    public void increaseStock(int quantity) {
+        this.stock = this.stock + quantity;
+    }
 }
