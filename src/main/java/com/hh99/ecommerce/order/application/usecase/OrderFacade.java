@@ -2,17 +2,18 @@ package com.hh99.ecommerce.order.application.usecase;
 
 import com.hh99.ecommerce.balance.domain.BalanceService;
 import com.hh99.ecommerce.order.application.dto.OrderItemCreateInfo;
+import com.hh99.ecommerce.order.domain.OrderEventService;
 import com.hh99.ecommerce.order.domain.OrderService;
 import com.hh99.ecommerce.order.domain.dto.OrderDomain;
 import com.hh99.ecommerce.order.domain.dto.OrderItemDomain;
 import com.hh99.ecommerce.order.infra.entity.OrderOutbox;
 import com.hh99.ecommerce.order.interfaces.request.OrderCreateRequest;
+import com.hh99.ecommerce.order.interfaces.response.CreateOrderResponse;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import com.hh99.ecommerce.product.domain.ProductService;
 import com.hh99.ecommerce.product.domain.dto.DeductStockInfo;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -26,9 +27,9 @@ public class OrderFacade {
     private final OrderService orderService;
     private final ProductService productService;
     private final BalanceService balanceService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final OrderEventService orderEventService;
 
-    public void createOrder(Long userId, List<OrderCreateRequest> requests) {
+    public CreateOrderResponse createOrder(Long userId, List<OrderCreateRequest> requests) {
         List<OrderItemCreateInfo> orderItemCreateInfos = getOrderItemsInfo(userId, requests);
         List<DeductStockInfo> deductedStocks = new ArrayList<>();
 
@@ -60,7 +61,13 @@ public class OrderFacade {
             OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
 
             // 이벤트 발행
-            eventPublisher.publishEvent(orderOutbox);
+            orderEventService.saveAndPublishEvent(orderOutbox);
+
+            // 응답 객체 생성
+
+            return CreateOrderResponse.builder()
+                    .id(orderDomain.getId())
+                    .build();  // 이벤트 발행 후에 return
         }catch (Exception e){
             deductedStocks.forEach(productService::compensateStock);
             throw e;

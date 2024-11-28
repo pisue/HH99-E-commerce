@@ -4,7 +4,6 @@ import com.hh99.ecommerce.order.domain.dto.OrderOutboxPayload;
 import com.hh99.ecommerce.order.domain.enums.OutboxStatus;
 import com.hh99.ecommerce.order.infra.entity.OrderOutbox;
 import com.hh99.ecommerce.order.infra.repository.OrderOutboxRepository;
-import com.hh99.ecommerce.platform.PlatformApiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,7 +15,10 @@ import org.springframework.stereotype.Component;
 public class OrderEventConsumer {
     private final OrderOutboxRepository orderOutboxRepository;
 
-    @KafkaListener(topics = "order-create")
+    @KafkaListener(
+            topics = "order-create",
+            groupId = "group-01"
+    )
     public void handleOrderCreated(OrderOutboxPayload payload) {
         log.info("Received order created event: {}", payload);
         

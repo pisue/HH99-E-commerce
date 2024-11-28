@@ -2,6 +2,7 @@ package com.hh99.ecommerce.order.interfaces.controller;
 
 import com.hh99.ecommerce.order.application.usecase.OrderFacade;
 import com.hh99.ecommerce.order.interfaces.request.CreateOrderRequest;
+import com.hh99.ecommerce.order.interfaces.response.CreateOrderResponse;
 import com.hh99.ecommerce.order.interfaces.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class OrderController implements SwaggerOrderController{
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrder(@RequestBody CreateOrderRequest request) {
-        orderFacade.createOrder(request.getUserId(), request.getOrderCreateRequests());
+    public CreateOrderResponse createOrder(@RequestBody CreateOrderRequest request) {
+        return orderFacade.createOrder(request.getUserId(), request.getOrderCreateRequests());
     }
 
     @Override
@@ -30,7 +31,7 @@ public class OrderController implements SwaggerOrderController{
     }
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/order/{id}")
     public OrderResponse getOrder(@PathVariable Long id) {
         return orderFacade.getOrder(id);
     }

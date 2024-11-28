@@ -1,13 +1,10 @@
 package com.hh99.ecommerce.order.interfaces.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Builder
 public class CreateOrderResponse {
-    private String message;
-    private Long orderId;
+    private Long id;
 }

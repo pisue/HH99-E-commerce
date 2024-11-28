@@ -33,12 +33,20 @@ public class CartDomain {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+    public Cart generateCart() {
+        return Cart.builder()
+                .userId(this.userId)
+                .quantity(this.quantity)
+                .productId(this.productId)
+                .build();
+    }
 
     public Cart toEntity() {
         return Cart.builder()
                 .id(this.id)
                 .userId(this.userId)
                 .quantity(this.quantity)
+                .productId(this.productId)
                 .createdAt(this.createdAt)
                 .deletedAt(this.deletedAt)
                 .build();

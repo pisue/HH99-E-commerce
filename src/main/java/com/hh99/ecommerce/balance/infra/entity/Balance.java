@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Balance {
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,7 @@ public class Balance {
         this.id = id;
         this.userId = userId;
         this.amount = amount;
+        this.version = 0L;
     }
 
     public void charge(BigDecimal chargeAmount) {
