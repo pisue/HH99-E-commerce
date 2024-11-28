@@ -4,17 +4,23 @@ import com.hh99.ecommerce.product.application.model.ProductInfo;
 import com.hh99.ecommerce.product.infra.Product;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-public class ProductDomain {
-    private final Long id;
-    private final String name;
-    private final String description;
-    private final BigDecimal price;
-    private final int stock;
-    private final LocalDateTime regDate;
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // 기본 생성자 추가
+public class ProductDomain implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private int stock;
+    private LocalDateTime regDate;
 
     @Builder
     protected ProductDomain(Long id, String name, String description, BigDecimal price, int stock, LocalDateTime regDate) {
