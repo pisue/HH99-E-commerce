@@ -6,14 +6,21 @@ import com.hh99.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.hh99.ecommerce.product.infra.Product;
 import com.hh99.ecommerce.product.infra.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "products")
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -25,11 +32,10 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDomain deductProductStock(DeductStockInfo deductStockInfo) {
+    public void deductProductStock(DeductStockInfo deductStockInfo) {
         Product product = productRepository.findByIdWithPessimisticLock(deductStockInfo.getProductId())
                 .orElseThrow(ProductNotFoundException::new);
         product.deductStock(deductStockInfo.getQuantity());
-        return product.toDomain();
     }
 
     public List<ProductDomain> getProducts() {
@@ -42,6 +48,11 @@ public class ProductService {
         productRepository.save(productDomain.generateProduct());
     }
 
+    @Cacheable(
+        value = "popularItemsCache",
+        key = "'popular:' + #topNumber + ':' + #startDateTime.toString() + ':' + #endDateTime.toString()",
+        unless = "#result.isEmpty()"
+    )
     public List<ProductDomain> getPopularProducts(Integer topNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         return productRepository.findPopularProducts(topNumber, startDateTime, endDateTime)
                 .stream()
@@ -54,5 +65,11 @@ public class ProductService {
         Product product = productRepository.findByIdWithPessimisticLock(deductStockInfo.getProductId())
                 .orElseThrow(ProductNotFoundException::new);
         product.increaseStock(deductStockInfo.getQuantity());
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @CacheEvict(value = "popularItemsCache", allEntries = true)
+    public void clearPopularItemsCache() {
+        log.info("clear Popular Items Cache");
     }
 }

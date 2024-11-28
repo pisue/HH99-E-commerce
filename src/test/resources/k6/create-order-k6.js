@@ -1,7 +1,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Trend } from 'k6/metrics';
 
-export const options = {
+/*export const options = {
   scenarios: {
     create_order_scenario: {
       exec: 'create_order',
@@ -11,7 +12,42 @@ export const options = {
       maxDuration: '10000m',
     }
   }
+};*/
+
+export const options = {
+  scenarios: {
+    create_order_scenario: {
+      exec: 'create_order',
+      executor: 'ramping-vus',  // 점진적으로 부하를 증가
+      startVUs: 0,
+      stages: [
+        { duration: '30s', target: 10 },  // 30초 동안 10명까지 증가
+        { duration: '1m', target: 10 },   // 1분 동안 10명 유지
+        { duration: '30s', target: 0 },   // 30초 동안 0명까지 감소
+      ],
+    }
+  }
 };
+
+export function setup() {
+  // 캐시 워밍업
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+      'user-id': 1
+    },
+    tags: {
+      name: "0_인기상품_캐시_워밍업"
+    }
+  };
+
+  http.get(
+      `${host}/api/products/popular?topNumber=5&lastDays=3`,
+      params
+  );
+}
+
+const popularProductsTrend = new Trend('popular_products_response_time');
 
 const scenarioTagName = Object.freeze({
   1: "1_인기상품_조회",
@@ -65,11 +101,15 @@ export function create_order() {
 // scenario_1
 function getPopularProducts(defaultParam, scenarioNum) {
   const params = getHeadersWithTags(defaultParam, scenarioNum);
+  const startTime = new Date();
 
   const res = http.get(
       `${host}/api/products/popular?topNumber=5&lastDays=3`,
       params
-  )
+  );
+
+  popularProductsTrend.add(new Date() - startTime);
+
   check(res, { 'status was 200': (r) => r.status === 200 });
   console.log(`1_인기상품_조회: ${res.body}`);
   sleep(1);
