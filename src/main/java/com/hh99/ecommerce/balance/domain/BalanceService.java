@@ -68,30 +68,56 @@ public class BalanceService {
 
     
 
-        @Transactional
-
-        public void compensate(Long userId, BigDecimal amount) {
-
-            if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
+            @Transactional
 
     
 
-            Balance balance = balanceRepository.findByUserIdWithLock(userId)
-
-                    .orElseThrow(UserBalanceNotFoundException::new);
+            public void compensate(Long userId, BigDecimal amount) {
 
     
 
-            balance.charge(amount); // 차감된 금액 복구
+                if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
 
     
 
-            // 이력에는 CHARGE로 남기되, 추후 구분이 필요하면 Type을 추가해야 함. 현재는 CHARGE로 기록.
+        
 
-            BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.CHARGE, amount);
+    
 
-            balanceHistoryRepository.save(history);
+                Balance balance = balanceRepository.findByUserIdWithLock(userId)
+
+    
+
+                        .orElseThrow(UserBalanceNotFoundException::new);
+
+    
+
+        
+
+    
+
+                balance.charge(amount); // 차감된 금액 복구
+
+    
+
+        
+
+    
+
+                BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.ROLLBACK, amount);
+
+    
+
+                balanceHistoryRepository.save(history);
+
+    
+
+            }
+
+    
 
         }
 
-    }
+    
+
+        
