@@ -23,7 +23,7 @@ public class OrderEventConsumer {
         OrderOutbox outbox = orderOutboxRepository.findByOrderId(payload.getOrderId())
             .orElseThrow(() -> new RuntimeException("Order not found: " + payload.getOrderId()));
         
-        outbox.updateStatus(OutboxStatus.PUBLISHED     );
+        outbox.updateStatus(OutboxStatus.PUBLISHED);
         orderOutboxRepository.save(outbox);
     }
 }
