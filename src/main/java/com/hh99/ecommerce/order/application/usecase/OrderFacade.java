@@ -15,9 +15,9 @@ import com.hh99.ecommerce.product.domain.dto.DeductStockInfo;
 import com.hh99.ecommerce.product.domain.dto.ProductDomain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,41 +29,58 @@ public class OrderFacade {
     private final BalanceService balanceService;
     private final OrderEventService orderEventService;
 
-    @Transactional
     public CreateOrderResponse createOrder(Long userId, List<OrderCreateRequest> requests) {
         List<OrderItemCreateInfo> orderItemCreateInfos = getOrderItemsInfo(userId, requests);
+        List<DeductStockInfo> deductedStocks = new ArrayList<>();
+        boolean isBalanceDeducted = false;
+        BigDecimal totalPrice = BigDecimal.ZERO;
 
-        // 재고 차감 처리
-        requests.forEach(request -> {
-            DeductStockInfo deductStockInfo = request.toDeductStockInfo();
-            productService.deductProductStock(deductStockInfo);
-        });
+        try {
+            // 재고 차감 처리
+            for (OrderCreateRequest request : requests) {
+                DeductStockInfo deductStockInfo = request.toDeductStockInfo();
+                productService.deductProductStock(deductStockInfo);
+                deductedStocks.add(deductStockInfo);
+            }
 
-        //차감 포인트 계산
-        BigDecimal totalPrice = orderItemCreateInfos.stream()
-                .map(OrderItemCreateInfo::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // 차감 포인트 계산
+            totalPrice = orderItemCreateInfos.stream()
+                    .map(OrderItemCreateInfo::getPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 포인트 차감
-        balanceService.deduct(userId, totalPrice);
+            // 포인트 차감
+            balanceService.deduct(userId, totalPrice);
+            isBalanceDeducted = true;
 
-        // 주문 생성
-        OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
+            // 주문 생성
+            OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
 
-        // 주문 상세정보 저장
-        orderItemCreateInfos.forEach(orderItemCreateInfo ->
-                orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
-        );
+            // 주문 상세정보 저장
+            orderItemCreateInfos.forEach(orderItemCreateInfo ->
+                    orderService.createOrderItem(orderItemCreateInfo.generateOrderItemDomain(orderDomain.getId()))
+            );
 
-        OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
+            OrderOutbox orderOutbox = OrderOutbox.createFrom(orderDomain.toEntity(), requests);
 
-        // 이벤트 발행
-        orderEventService.saveAndPublishEvent(orderOutbox);
+            // 이벤트 발행
+            orderEventService.saveAndPublishEvent(orderOutbox);
 
-        // 응답 객체 생성
-        return CreateOrderResponse.builder()
-                .id(orderDomain.getId())
-                .build();
+            // 응답 객체 생성
+            return CreateOrderResponse.builder()
+                    .id(orderDomain.getId())
+                    .build();
+
+        } catch (Exception e) {
+            // 보상 트랜잭션 실행
+            // 1. 재고 복구 (성공한 내역만)
+            deductedStocks.forEach(productService::compensateStock);
+
+            // 2. 잔액 복구 (차감에 성공했을 경우만)
+            if (isBalanceDeducted) {
+                balanceService.compensate(userId, totalPrice);
+            }
+            throw e;
+        }
     }
 
     public List<OrderResponse> getOrders(Long userId) {
