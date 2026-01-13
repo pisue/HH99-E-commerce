@@ -29,7 +29,7 @@ public class BalanceService {
 
         Balance balance = balanceRepository.findByUserIdWithLock(userId)
                 .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)));
-        
+
         balance.charge(amount);
 
         BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.CHARGE, amount);
@@ -37,22 +37,33 @@ public class BalanceService {
     }
 
     public BalanceDomain getBalance(Long userId) {
-       return balanceRepository.findByUserId(userId)
-               .map(Balance::toDomain)
-               .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)).toDomain());
+        return balanceRepository.findByUserId(userId)
+                .map(Balance::toDomain)
+                .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)).toDomain());
     }
 
     @Transactional
     public void deduct(Long userId, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
-
         Balance balance = balanceRepository.findByUserIdWithLock(userId)
                 .orElseThrow(UserBalanceNotFoundException::new);
-
         balance.deduct(amount);
-
         BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.DEDUCT, amount);
         balanceHistoryRepository.save(history);
     }
 
+    @Transactional
+    public void compensate(Long userId, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
+        Balance balance = balanceRepository.findByUserIdWithLock(userId)
+                .orElseThrow(UserBalanceNotFoundException::new);
+        balance.charge(amount); // 차감된 금액 복구
+        BalanceHistory history = BalanceHistory.create(balance.getId(), BalanceHistoryType.ROLLBACK, amount);
+        balanceHistoryRepository.save(history);
+    }
+
 }
+
+    
+
+        

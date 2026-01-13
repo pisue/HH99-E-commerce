@@ -32,23 +32,25 @@ public class OrderFacade {
     public CreateOrderResponse createOrder(Long userId, List<OrderCreateRequest> requests) {
         List<OrderItemCreateInfo> orderItemCreateInfos = getOrderItemsInfo(userId, requests);
         List<DeductStockInfo> deductedStocks = new ArrayList<>();
+        boolean isBalanceDeducted = false;
+        BigDecimal totalPrice = BigDecimal.ZERO;
 
         try {
             // 재고 차감 처리
-            requests.forEach(request -> {
+            for (OrderCreateRequest request : requests) {
                 DeductStockInfo deductStockInfo = request.toDeductStockInfo();
+                productService.deductProductStock(deductStockInfo);
+                deductedStocks.add(deductStockInfo);
+            }
 
-                    productService.deductProductStock(deductStockInfo);
-                    deductedStocks.add(deductStockInfo);
-            });
-
-            //차감 포인트 계산
-            BigDecimal totalPrice = orderItemCreateInfos.stream()
+            // 차감 포인트 계산
+            totalPrice = orderItemCreateInfos.stream()
                     .map(OrderItemCreateInfo::getPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             // 포인트 차감
             balanceService.deduct(userId, totalPrice);
+            isBalanceDeducted = true;
 
             // 주문 생성
             OrderDomain orderDomain = orderService.createOrder(userId, totalPrice);
@@ -64,12 +66,19 @@ public class OrderFacade {
             orderEventService.saveAndPublishEvent(orderOutbox);
 
             // 응답 객체 생성
-
             return CreateOrderResponse.builder()
                     .id(orderDomain.getId())
-                    .build();  // 이벤트 발행 후에 return
-        }catch (Exception e){
+                    .build();
+
+        } catch (Exception e) {
+            // 보상 트랜잭션 실행
+            // 1. 재고 복구 (성공한 내역만)
             deductedStocks.forEach(productService::compensateStock);
+
+            // 2. 잔액 복구 (차감에 성공했을 경우만)
+            if (isBalanceDeducted) {
+                balanceService.compensate(userId, totalPrice);
+            }
             throw e;
         }
     }

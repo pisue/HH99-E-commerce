@@ -127,3 +127,52 @@
 ## 참고
 - [Saga 패턴을 이용한 분산 트랜잭션 제어(결제 프로세스 실습)](https://velog.io/@hgs-study/saga-1)
 - [[NHN FORWARD 22] 분산 시스템에서 데이터를 전달하는 효율적인 방법](https://www.youtube.com/watch?v=uk5fRLUsBfk&t=1416s)
+
+---
+
+## 🚀 구현 현황 (Orchestration 기반 Saga 시뮬레이션)
+
+현재 프로젝트는 **단일 DB(Monolith)** 환경이지만, 추후 MSA 전환을 대비하여 **OrderFacade**가 오케스트레이터 역할을 수행하는 형태의 트랜잭션 관리를 시뮬레이션하고 있습니다.
+
+### 구현 상세
+*   **Orchestrator:** `OrderFacade`
+*   **트랜잭션 관리:** `@Transactional`을 사용하지 않고, 각 단계별 서비스(`ProductService`, `BalanceService`)가 독립적인 트랜잭션을 가집니다.
+*   **보상 트랜잭션 (Compensation Transaction):**
+    *   프로세스 진행 중 예외 발생 시 `try-catch` 블록에서 이미 성공한 이전 단계들의 작업을 역순으로 취소합니다.
+
+### 트랜잭션 흐름 및 보상 로직
+1.  **재고 차감 (`ProductService.deductProductStock`)**
+    *   성공 시: `deductedStocks` 리스트에 차감 정보 기록.
+    *   실패 시: 전체 프로세스 종료 (보상 불필요).
+2.  **잔액 차감 (`BalanceService.deduct`)**
+    *   성공 시: `isBalanceDeducted` 플래그를 `true`로 설정.
+    *   실패 시:
+        *   **보상:** `deductedStocks`에 기록된 상품들의 재고를 `ProductService.compensateStock`을 통해 복구.
+3.  **주문 생성 및 이벤트 발행 (`OrderService`, `OrderEventService`)**
+    *   성공 시: 전체 프로세스 완료.
+    *   실패 시:
+        *   **보상 1:** 잔액 복구 (`BalanceService.compensate`).
+        *   **보상 2:** 재고 복구 (`ProductService.compensateStock`).
+
+### 코드 예시 (`OrderFacade.java`)
+```java
+try {
+    // 1. 재고 차감
+    productService.deductProductStock(...);
+    
+    // 2. 잔액 차감
+    balanceService.deduct(...);
+
+    // 3. 주문 생성
+    orderService.createOrder(...);
+    
+} catch (Exception e) {
+    // 실패 시 보상 트랜잭션 실행
+    productService.compensateStock(...); // 재고 복구
+    if (balanceIsDeducted) {
+        balanceService.compensate(...); // 잔액 복구
+    }
+    throw e;
+}
+```
+이러한 구조를 통해 서비스 간 결합도를 낮추고, 분산 환경에서의 데이터 정합성을 유지하는 방법을 학습 및 적용하였습니다.
