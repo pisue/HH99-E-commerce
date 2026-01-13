@@ -26,7 +26,7 @@ public class ProductService {
 
     @Transactional
     public void deductProductStock(Long productId, int quantity) {
-        productRepository.findById(productId)
+        productRepository.findByIdWithLock(productId)
                 .map(product -> {
                     int stock = product.getStock();
                     if (stock < quantity) throw new OutOfStockException();

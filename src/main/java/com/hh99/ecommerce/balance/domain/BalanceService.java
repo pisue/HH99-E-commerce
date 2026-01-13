@@ -27,7 +27,7 @@ public class BalanceService {
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
 
-        Balance balance = balanceRepository.findByUserId(userId)
+        Balance balance = balanceRepository.findByUserIdWithLock(userId)
                 .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)));
         
         balance.charge(amount);
@@ -37,7 +37,7 @@ public class BalanceService {
     }
 
     public BalanceDomain getBalance(Long userId) {
-       return balanceRepository.findById(userId)
+       return balanceRepository.findByUserId(userId)
                .map(Balance::toDomain)
                .orElseGet(() -> balanceRepository.save(Balance.createNewBalance(userId)).toDomain());
     }
@@ -46,7 +46,7 @@ public class BalanceService {
     public void deduct(Long userId, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidAmountException();
 
-        Balance balance = balanceRepository.findByUserId(userId)
+        Balance balance = balanceRepository.findByUserIdWithLock(userId)
                 .orElseThrow(UserBalanceNotFoundException::new);
 
         if(balance.getAmount().compareTo(amount) < 0) throw new BalanceNotEnoughException();

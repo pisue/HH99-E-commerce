@@ -24,8 +24,13 @@ public class OrderEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleOrderCreatedEvent(OrderOutbox orderOutbox) {
         log.info("Sending message to Kafka for order: {}", orderOutbox.getOrderId());
-        kafkaMessageProducer.send("order-create",
-            String.valueOf(orderOutbox.getOrderId()),
-            orderOutbox.getPayloadAsObject());
+        try {
+            kafkaMessageProducer.send("order-create",
+                    String.valueOf(orderOutbox.getOrderId()),
+                    orderOutbox.getPayloadAsObject());
+            orderEventService.setPublished(orderOutbox.getOrderId());
+        } catch (Exception e) {
+            log.error("Failed to send message to Kafka for order: {}", orderOutbox.getOrderId(), e);
+        }
     }
 }
